@@ -2,15 +2,25 @@ using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using WebApi.Common;
 
 namespace WebApi.Infrastructure;
 
+/// <summary>
+/// ASP.NET Core middleware implementation to deal with exceptions.
+/// </summary>
 public class CustomExceptionMiddleware
 {
     private readonly RequestDelegate next;
     private readonly ILogger<CustomExceptionMiddleware> logger;
     private readonly ProblemDetailsFactory problemDetailsFactory;
 
+    /// <summary>
+    /// CustomExceptionMiddleware constructor
+    /// </summary>
+    /// <param name="next">The next delegate, provided by the framework</param>
+    /// <param name="logger">For logging</param>
+    /// <param name="problemDetailsFactory">To create <seealso cref="ProblemDetails"/> instances</param>
     public CustomExceptionMiddleware(RequestDelegate next, ILogger<CustomExceptionMiddleware> logger,
         ProblemDetailsFactory problemDetailsFactory)
     {
@@ -19,6 +29,10 @@ public class CustomExceptionMiddleware
         this.problemDetailsFactory = problemDetailsFactory;
     }
 
+    /// <summary>
+    /// To support invocation by the framework
+    /// </summary>
+    /// <param name="httpContext">The HTTP request context</param>
     public async Task InvokeAsync(HttpContext httpContext)
     {
         try
@@ -73,4 +87,3 @@ public class CustomExceptionMiddleware
         return problemDetails;
     }
 }
-

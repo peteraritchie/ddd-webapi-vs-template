@@ -1,16 +1,34 @@
 using System.Net;
-using System.Net.Mime;
+using Core.Commands;
+using Core.Events;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.Examples;
+using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
+using PRI.Messaging.Patterns.Extensions.Bus;
+using PRI.Messaging.Primitives;
+using Swashbuckle.AspNetCore.Filters;
 using WebApi.Common;
 using WebApi.Dtos;
+using WebApi.Dtos.Translators;
 
 namespace WebApi.Controllers;
 
+/// <summary>
+/// 
+/// </summary>
 [ApiController]
 [Route("[controller]")]
 public class OrdersController : ControllerBase
 {
+    private readonly IBus bus;
+    private readonly OrdersControllerOptions options;
+
+    public OrdersController(IOptions<OrdersControllerOptions> options, IBus bus)
+    {
+        this.bus = bus;
+        this.options = options.Value;
+    }
+
     /// <summary>
     /// Get a order by id
     /// </summary>
@@ -40,6 +58,7 @@ public class OrdersController : ControllerBase
 
     /// <summary>Create an order</summary>
     [HttpPost]
+    [Consumes(typeof(OrderDto), ApplicationContentTypes.OrderJson)]
     [Produces(ApplicationContentTypes.OrderJson, ModernMediaTypeNames.Application.ProblemJson)] // required along with ProducesResponseType
     [ProducesResponseType(typeof(OrderDto),
         statusCode: StatusCodes.Status201Created,
@@ -47,45 +66,74 @@ public class OrdersController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails),
         statusCode: StatusCodes.Status400BadRequest,
         contentType: ModernMediaTypeNames.Application.ProblemJson)]
-    [SwaggerResponseHeader(HttpStatusCode.Created,
+    [SwaggerResponseHeader(StatusCodes.Status201Created,
         nameof(HttpResponseHeader.Location),
         type: "string",
         description: "Location of the newly created resource")]
     public async Task<IActionResult> CreateOrderAsync(OrderDto order)
     {
-        if (!ModelState.IsValid)
-        {
-            return ValidationProblem(ModelState);
-        }
+        var correlationId = DiscoverCorrelationId();
 
-        var orderId = Guid.NewGuid();
+        var createOrder = new CreateOrder(correlationId, order.OrderDate!.Value.DateTime,
+            order.OrderItems!.Select(OrderDtoTranslator.ToDomain),
+            shippingAddress: OrderDtoTranslator.ToDomain(order.ShippingAddress!),
+            billingAddress: order.BillingAddress != null ? OrderDtoTranslator.ToDomain(order.BillingAddress) : default);
+
+        var orderCreated = await bus.RequestAsync<CreateOrder, OrderCreated>(createOrder);
 
         return CreatedAtAction(nameof(GetOrder),
-                routeValues: new { orderId },
-                value: order);
+            routeValues: new { orderCreated.OrderId},
+            value: OrderDtoTranslator.FromDomain(orderCreated.Order));
     }
 
-    //[HttpGet]
-    //public IActionResult GetCreateOrderRequest([FromRoute]Guid requestId)
-    //{
-    //    return Ok(new { status = "pending" });
-    //}
+    private Guid DiscoverCorrelationId()
+    {
+        if (!Request.Headers.TryGetValue(CorrelationIdKeyName, out var values))
+        {
+            if (!Request.Headers.TryGetValue(HeaderNames.RequestId, out values))
+            {
+            }
+        }
+
+        var headerValue = values.FirstOrDefault();
+        if (!Guid.TryParse(headerValue, out var correlationId))
+            correlationId = Guid.NewGuid();
+
+        Response.Headers.Add(CorrelationIdKeyName, correlationId.ToString());
+
+        return correlationId;
+    }
+
+    public const string CorrelationIdKeyName = "Correlation-ID";
 
     private static OrderDto GenerateExampleOrder()
     {
-        return new OrderDto(DateTimeOffset.UtcNow, new PostalAddressDto("14544 ROGUE RIVER DR", "CHESTERFIELD", "MO", "63017"), new []
+        return new OrderDto
         {
-            new OrderItemDto()
-        });
+            OrderDate = DateTimeOffset.UtcNow,
+            ShippingAddress = new PostalAddressDto
+            {
+                StreetAddress = "14544 ROGUE RIVER DR",
+                CityName = "CHESTERFIELD",
+                StateName = "MO",
+                PostalCodeText = "63017"
+            },
+            OrderItems = new[]
+            {
+                new OrderItemDto()
+            }
+        };
     }
-}
 
-public static class ApplicationContentTypes
-{
-    public const string OrderJson = "application/vnd.contoso.sales.order+json; charset=utf-8; version=1.0";
-    public const string AcceptedJson = "application/vnd.contoso.accepted+json; charset=utf-8";
-}
-
-public class AcceptedResponse
-{
+    /// <summary>
+    /// Example controller options
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "In progress.")]
+    public class OrdersControllerOptions
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool FeatureFlag1 { get; set; }
+    }
 }

@@ -10,7 +10,7 @@ indent_size = 2
 
 # C# files
 [*.cs]
-indent_style = space
+indent_style = tab
 
 #### Core EditorConfig Options ####
 
@@ -21,15 +21,24 @@ tab_width = 4
 # New line preferences
 end_of_line = crlf
 insert_final_newline = true
+
+# dotnet
+dotnet_diagnostic.CS1591.severity = none
+
+# resharper?
+csharp_new_line_before_members_in_object_initializers = false
+csharp_preferred_modifier_order = public, private, protected, internal, file, new, static, abstract, virtual, sealed, readonly, override, extern, unsafe, volatile, async, required:suggestion
+csharp_style_prefer_utf8_string_literals = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+
 #### Naming styles ####
 
 resharper_redundant_explicit_positional_property_declaration_highlighting = none
 
 # Naming rules
 
-# dotnet_naming_rule.private_or_internal_field_should_be_camelcase.severity = suggestion
-# dotnet_naming_rule.private_or_internal_field_should_be_camelcase.symbols = private_or_internal_field
-# dotnet_naming_rule.private_or_internal_field_should_be_camelcase.style = camelcase
 dotnet_naming_rule.private_fields_should_be_camelcase.severity = warning
 dotnet_naming_rule.private_fields_should_be_camelcase.symbols = private_fields
 dotnet_naming_rule.private_fields_should_be_camelcase.style = camelcase

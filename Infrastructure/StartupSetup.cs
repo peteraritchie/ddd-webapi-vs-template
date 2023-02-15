@@ -2,28 +2,27 @@
 using Microsoft.Extensions.DependencyInjection;
 
 
-namespace Infrastructure
+namespace Infrastructure;
+
+public static class StartupSetup
 {
-    public static class StartupSetup
+    public static IApplicationBuilder Configure(this IApplicationBuilder app)
     {
-        public static IApplicationBuilder Configure(this IApplicationBuilder app)
-        {
-            return app;
-        }
+        return app;
+    }
 
-        /// <summary>
-        /// Add services and types that are infrastructure-related
-        /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static IServiceCollection ConfigureServices(this IServiceCollection services)
-        {
-            return services;
-        }
+    /// <summary>
+    /// Add services and types that are infrastructure-related
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection ConfigureServices(this IServiceCollection services)
+    {
+        return services;
+    }
 
-        public static IServiceCollection AddDbContext(this IServiceCollection services, string connectionString)
-        {
-            return services;
-        }
+    public static IServiceCollection AddDbContext(this IServiceCollection services, string connectionString)
+    {
+        return services;
     }
 }

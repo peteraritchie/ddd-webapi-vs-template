@@ -1,23 +1,23 @@
 using System.Net;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Tests.Common;
 using WebApi;
 using WebApi.Common;
 using WebApi.Controllers;
 
+[assembly:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "Test code need not be covered.")]
+
 namespace Tests;
 
-public sealed class OrdersEndpointShould
-    : IClassFixture<WebApplicationFactory<Program>>, IDisposable
+public sealed class OrdersEndpointShould : WebApplicationTesterBase, IDisposable
 {
+    public OrdersEndpointShould(WebApplicationFactory<Program> webApplicationFactory)
+        : base(webApplicationFactory)
+    {
+    }
     private readonly MediaTypeHeaderValue orderJsonMediaType = MediaTypeHeaderValue.Parse(ApplicationContentTypes.OrderJson);
     private readonly MediaTypeHeaderValue problemJsonMediaType = MediaTypeHeaderValue.Parse(ModernMediaTypeNames.Application.ProblemJson);
-    private readonly HttpClient client;
-
-    public OrdersEndpointShould(WebApplicationFactory<Program> webApplicationFactory)
-    {
-        client = webApplicationFactory.CreateClient();
-    }
 
     [Fact]
     public async Task HaveCorrectStatusCodeWithCorrectGet()
@@ -67,6 +67,16 @@ public sealed class OrdersEndpointShould
         Assert.Equal(HttpStatusCode.UnsupportedMediaType, response.StatusCode);
     }
 
+    [Fact]
+    public async Task HaveCreatedStatusOnPost()
+    {
+        using var content = new StringContent(TestData.OrderJsonText, mediaType: orderJsonMediaType);
+        using var response = await client.PostAsync("/Orders", content);
+        Assert.NotNull(response);
+        Assert.True(response.IsSuccessStatusCode);
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+    }
+
     [Fact(Skip="asp.net does not cooperate")]
     public async Task HaveCorrectBadRequestContentTypeGet()
     {
@@ -74,10 +84,5 @@ public sealed class OrdersEndpointShould
         Assert.NotNull(response);
         Assert.False(response.IsSuccessStatusCode);
         Assert.Equal(problemJsonMediaType.MediaType, response.Content.Headers.ContentType?.MediaType);
-    }
-
-    public void Dispose()
-    {
-        client.Dispose();
     }
 }
