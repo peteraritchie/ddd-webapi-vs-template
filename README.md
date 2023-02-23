@@ -1,5 +1,6 @@
-# title
+# Readme
 
+<!--
 Tenets:
 
 - Messages are DTOs [Dahan]
@@ -32,7 +33,7 @@ Practices:
 - Command always through web API. [Ritchie]
 - Web API Validates, Domain Validates, Adapters Validate
 - Adapters always involve translation or a translator. [Ritchie] or [Martin]
-
+-->
 Structure:
 
 - Domain
