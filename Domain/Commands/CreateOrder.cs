@@ -10,6 +10,11 @@ public class CreateOrder : ICommand
 	{
 	}
 
+	public CreateOrder(Guid correlationId, Order order)
+		: this(correlationId, order.DateTime, order.OrderItems, order.ShippingAddress, order.BillingAddress)
+	{
+	}
+
 	public CreateOrder(Guid correlationId, DateTime dateTime, IEnumerable<OrderLineItem> orderItems,
 		PostalAddress shippingAddress,
 		PostalAddress? billingAddress)

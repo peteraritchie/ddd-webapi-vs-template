@@ -15,6 +15,7 @@ using WebApi.Dtos.Translators;
 namespace WebApi.Controllers;
 
 /// <summary>
+/// The orders ControllerBase adapter
 /// </summary>
 [ApiController]
 [Route("[controller]")]
@@ -83,16 +84,15 @@ public class OrdersController : ControllerBase
 
 		var correlationId = DiscoverCorrelationId();
 
-		var createOrder = new CreateOrder(correlationId, order.OrderDate!.Value.DateTime,
-			order.OrderItems!.Select(OrderDtoTranslator.ToDomain),
-			OrderDtoTranslator.ToDomain(order.ShippingAddress!),
-			order.BillingAddress != null ? OrderDtoTranslator.ToDomain(order.BillingAddress) : default);
+		var domainOrder = order.ToDomain();
+
+		var createOrder = new CreateOrder(correlationId, domainOrder);
 
 		var orderCreated = await bus.RequestAsync<CreateOrder, OrderCreated>(createOrder);
 
 		return CreatedAtAction(nameof(GetOrder),
 			new { orderCreated.OrderId },
-			OrderDtoTranslator.FromDomain(orderCreated.Order));
+			orderCreated.Order.FromDomain());
 	}
 
 	private Guid DiscoverCorrelationId()

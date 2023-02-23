@@ -23,8 +23,6 @@ public class Program
 	[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "ROI low.")]
 	public static void Main(string[] args)
 	{
-		Boolean farts;
-
 		// logging: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-7.0
 		var builder = WebApplication.CreateBuilder(args);
 

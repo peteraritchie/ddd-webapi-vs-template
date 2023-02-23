@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="PRI.Messaging.Patterns" Version="3.0.0-beta" />
   </ItemGroup>
 
   <ItemGroup>

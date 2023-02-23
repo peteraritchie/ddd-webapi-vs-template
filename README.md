@@ -49,7 +49,7 @@ Structure:
     - Validators
       - Encapsulates some of the critical business logic relating to invariants relating to instantiating domain objects. 
   - Exceptions
-    - Domain-specific exceptions (e.g. EntityNotFoundException, EntityAlreadyExistsException, etc.)
+    - Domain-specific exceptions (e.g. `EntityNotFoundException`, `EntityAlreadyExistsException`, etc.)
   - Abstractions
     - interfaces, repositories, etc.
 - Application

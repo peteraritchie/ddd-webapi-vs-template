@@ -4,7 +4,7 @@ using Domain.Events;
 using PRI.Messaging.Patterns.Extensions.Bus;
 using PRI.Messaging.Primitives;
 
-namespace Infrastructure;
+namespace Application;
 
 public class AddOrderItemHandler : IConsumer<AddOrderItem>
 {
