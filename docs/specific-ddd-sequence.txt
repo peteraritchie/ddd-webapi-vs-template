@@ -1,8 +1,10 @@
 title Generic Domain-Driven Scenario
 
-participant "API Client" as client
+actor "API Client" as client
 participantgroup WebAPI\nLayer
 participant "Controller" as api
+participant "DTO" as apiDTO
+participant "Domain\nobject" as domainObject
 end
 participantgroup Application\nLayer
 participant "Application\nService" as appservice
@@ -14,20 +16,38 @@ end
 participantgroup Infrastructure\nLayer
 participant "Infrastructure\nService" as infservice
 participant "Data\nService" as dataservice
+participant "DTO" as dataDTO
+participant "Domain\nobject" as dataDomainObject
 end
 database Database
 
 client->api:
 activate api
+api->*domainObject:validate &\ntranslate
+api<-domainObject:
+destroy domainObject
 api->appservice:
 activate appservice
 appservice->(1)repository:
 activate repository
 repository->(1)dataservice:
 activate dataservice
-dataservice->Database:
+
+alt upsert
+dataservice->*dataDTO:translate
+dataservice<-dataDTO:
+dataservice->Database:store
 dataservice<--Database:
+destroyafter dataDTO
+else get
+dataservice->Database:retrieve
+dataservice<--Database:
+dataservice->*dataDomainObject:translate
+dataservice<-dataDomainObject:
+destroyafter dataDomainObject
+end
 repository<--dataservice:
+
 deactivateafter dataservice
 deactivateafter repository
 appservice->aggregateroot:
@@ -40,5 +60,8 @@ appservice<--infservice:
 api<--appservice:
 deactivateafter infservice
 deactivateafter appservice
+api->*apiDTO:translate
+api<-apiDTO:
+destroy apiDTO
 client<--api:respond
 deactivateafter api
