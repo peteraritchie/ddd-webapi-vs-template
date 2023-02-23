@@ -1,6 +1,11 @@
+using System.ComponentModel.DataAnnotations;
+using System.Net.Http;
+
+using Application.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using Moq;
 using WebApi.Infrastructure;
@@ -9,6 +14,28 @@ namespace Tests;
 
 public class CustomExceptionMiddlewareShould
 {
+	[Fact]
+	public async Task DoTheRightThingWithValidationsException()
+	{
+		using var bodyStream = new MemoryStream();
+		var problemDetailsFactoryMock = SetupProblemDetailsFactoryMock();
+		var exception = new ValidationsException(new List<ValidationResult>
+		{
+			new ValidationResult("out of range", new[] { "field" })
+		});
+		var requestDelegateMock = SetupRequestDelegateMock(bodyStream, exception, out var httpContext);
+		var loggerMock = new Mock<ILogger<CustomExceptionMiddleware>>();
+		var sut = new CustomExceptionMiddleware(requestDelegateMock.Object, loggerMock.Object, problemDetailsFactoryMock.Object);
+
+		await sut.InvokeAsync(httpContext);
+
+		bodyStream.Seek(0, SeekOrigin.Begin);
+		var text = System.Text.Encoding.ASCII.GetString(bodyStream.ToArray());
+		Assert.Equal(
+			"{\"title\":\"One or more validation errors occurred.\",\"status\":400,\"errors\":{\"field\":[\"out of range\"]}}",
+			text);
+	}
+
 	[Fact]
 	public async Task CreateProblemDetailsSuccessfully()
 	{
@@ -28,7 +55,7 @@ public class CustomExceptionMiddlewareShould
 			text);
 	}
 
-	private static Mock<RequestDelegate> SetupRequestDelegateMock(MemoryStream bodyStream, out HttpContext httpContext)
+	private static Mock<RequestDelegate> SetupRequestDelegateMock(Stream bodyStream, out HttpContext httpContext)
 	{
 		var httpResponse = new Mock<HttpResponse>()
 			.SetupProperty(m => m.Body, bodyStream);
@@ -42,6 +69,25 @@ public class CustomExceptionMiddlewareShould
 		requestDelegateMock
 			.Setup(m => m(It.IsAny<HttpContext>()))
 			.Throws<Exception>();
+		return requestDelegateMock;
+	}
+	private static Mock<RequestDelegate> SetupRequestDelegateMock<TException>(
+		Stream bodyStream,
+		TException exception,
+		out HttpContext httpContext) where TException : Exception
+	{
+		var httpResponse = new Mock<HttpResponse>()
+			.SetupProperty(m => m.Body, bodyStream);
+		var httpContextMock = new Mock<HttpContext>();
+		httpContextMock
+			.SetupGet(m => m.Response)
+			.Returns(httpResponse.Object);
+		httpContext = httpContextMock.Object;
+
+		var requestDelegateMock = new Mock<RequestDelegate>();
+		requestDelegateMock
+			.Setup(m => m(It.IsAny<HttpContext>()))
+			.Throws<TException>(()=>exception);
 		return requestDelegateMock;
 	}
 
@@ -60,6 +106,37 @@ public class CustomExceptionMiddlewareShould
 					Detail = detail,
 					Instance = instance
 				});
+		problemDetailsFactoryMock
+			.Setup(m => m.CreateValidationProblemDetails(
+				It.IsAny<HttpContext>(),
+				It.IsAny<ModelStateDictionary>(),
+				It.IsAny<int?>(),
+				It.IsAny<string>(),
+				It.IsAny<string>(),
+				It.IsAny<string>(),
+				It.IsAny<string>()))
+			.Returns((HttpContext _, ModelStateDictionary modelStateDictionary, int? statusCode,
+				string? title, string? type, string? detail, string? instance) =>
+			{
+				statusCode ??= 400;
+
+				var problemDetails = new ValidationProblemDetails(modelStateDictionary)
+				{
+					Status = statusCode,
+					Type = type,
+					Detail = detail,
+					Instance = instance,
+				};
+
+				if (title != null)
+				{
+					// For validation problem details, don't overwrite the default title with null.
+					problemDetails.Title = title;
+				}
+
+				return problemDetails;
+			});
 		return problemDetailsFactoryMock;
 	}
+
 }

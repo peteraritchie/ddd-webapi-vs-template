@@ -1,8 +1,10 @@
 using System.Net;
 using System.Text.Json;
+using Application.Exceptions;
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using WebApi.Common;
 
 namespace WebApi.Infrastructure;
@@ -53,13 +55,22 @@ public class CustomExceptionMiddleware
 	{
 		HttpStatusCode statusCode;
 		string detail;
-
+		ModelStateDictionary modelState = new();
 		switch (exception)
 		{
 			case EntityNotFoundException ex:
 				statusCode = HttpStatusCode.NotFound;
 				detail = $"Entity with ID {ex.Id} does not exist.";
 				break;
+			case ValidationsException ex:
+				foreach (var e in ex.ToDictionary())
+				{
+					modelState.AddModelError(e.Key, e.Value);
+				}
+				await WriteProblemDetails(
+					context,
+					problemDetailsFactory.CreateValidationProblemDetails(context, modelState));
+				return;
 			default:
 				statusCode = HttpStatusCode.InternalServerError;
 				detail = exception.Message;
@@ -76,10 +87,20 @@ public class CustomExceptionMiddleware
 	{
 		context.Response.StatusCode = problemDetails.Status!.Value;
 		context.Response.ContentType = problemDetails.GetContentType();
-		await JsonSerializer.SerializeAsync(
-			context.Response.Body,
-			problemDetails
-		);
+		if(problemDetails is ValidationProblemDetails validationProblemDetails)
+		{
+			await JsonSerializer.SerializeAsync(
+				context.Response.Body,
+				validationProblemDetails
+			);
+		}
+		else
+		{
+			await JsonSerializer.SerializeAsync(
+				context.Response.Body,
+				problemDetails
+			);
+		}
 	}
 
 	private ProblemDetails CreateProblemDetails(HttpContext context, HttpStatusCode statusCode, string detail)
