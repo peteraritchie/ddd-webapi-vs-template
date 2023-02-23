@@ -9,7 +9,7 @@ Tenets:
 - "Application service are responsible for task coordination of use case flows, one service method per flow". [Vernon]
 - [An application service is a command handler for a specific aggregate. One aggregate has one application service whose purpose is to orchestrate how commands will be fulfilled.](https://github.com/Elders/Cronus/blob/master/docs/cronus-framework/domain-modeling/handlers/application-services.md#:~:text=an%20application%20service%20is%20a%20command%20handler%20for%20a%20specific%20aggregate.%20one%20aggregate%20has%20one%20application%20service%20whose%20purpose%20is%20to%20orchestrate%20how%20commands%20will%20be%20fulfilled)
 - "Command Handler (semantically an Application Service)" [Vernon]
-- Application Services are command handlers that handle a use case. <!--"Application Services are command handlers ... [that handle a use case]"-->
+- Application Services are command handlers that handle a use case. --><!--"Application Services are command handlers ... [that handle a use case]"--><!--
   - A application service has a one-to-one relationship with an aggregate as an application-level aggregate facade. [Ritchie, paraphrashing Evans?]
 - "Integration across the boundaries necessarily will involve some translation, which you can analyze explicitly." [Evans]
 - "Integration of functionality and data [across bounded contexts] must go through a translation. 
