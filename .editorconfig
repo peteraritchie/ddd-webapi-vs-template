@@ -54,7 +54,6 @@ dotnet_naming_symbols.private_or_internal_field.required_modifiers =
 dotnet_naming_style.camelcase.required_prefix = 
 dotnet_naming_style.camelcase.required_suffix = 
 dotnet_naming_style.camelcase.word_separator = 
-dotnet_naming_style.camelcase.capitalization = camel_case
 csharp_indent_labels = one_less_than_current
 csharp_using_directive_placement = outside_namespace:silent
 csharp_prefer_simple_using_statement = true:suggestion

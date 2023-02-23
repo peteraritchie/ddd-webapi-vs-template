@@ -1,35 +1,38 @@
 using System.ComponentModel;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Application;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
+using Swashbuckle.AspNetCore.Filters;
 using WebApi.Controllers;
 using WebApi.Infrastructure;
-using Swashbuckle.AspNetCore.Filters;
 
 namespace WebApi;
 
 /// <summary>
-/// 
 /// </summary>
 /// <remarks>This is not static to support WebApplicationFactory&lt;T&gt; in tests</remarks>
 public class Program
 {
 	/// <summary>
-	/// Entry-point
+	///     Entry-point
 	/// </summary>
 	/// <param name="args">command-line args</param>
 	[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "ROI low.")]
 	public static void Main(string[] args)
 	{
+		Boolean farts;
+
 		// logging: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-7.0
 		var builder = WebApplication.CreateBuilder(args);
 
 		// Add services to the container.
 		builder.Services.AddSingleton<IFeatureFlagService, LaunchDarklyClient>();
-		InfrastructureServiceCollectionExtensions.ConfigureServices(builder.Services);
+		builder.Services.ConfigureServices();
+		builder.Services.ConfigureInfrastructureServices();
+		builder.Services.ConfigureApplicationServices();
 
 		// get a configuration value based upon an injected object example:
 		builder.Services.AddOptions<OrdersController.OrdersControllerOptions>()
@@ -88,49 +91,56 @@ public class Program
 
 		app.UseAuthorization();
 
-		app.Use(async (context, next) =>
-		{
-			Console.WriteLine($"{context.Request.Method} {context.Request.Path}");
-			foreach (var h in context.Request.Headers)
-			{
-				Console.WriteLine($"{h.Key}: {h.Value}");
-			}
-
-			switch (context.Request.Method)
-			{
-				case "GET":
-				case "HEAD":
-				default:
-					{
-						if (MediaTypeHeaderValue.TryParse(context.Request.ContentType, out var type))
-						{
-							string version = "unknown";
-
-							var parameters = string.Join(", ",
-								type.Parameters.Select(p => $"{p.Name}: {p.Value}").ToArray());
-							if (type.Parameters.Any(e => e.Name == "v"))
-								version = type.Parameters.Single(e => e.Name == "v").Value.Value ?? "unknown";
-							else if (type.Parameters.Any(e => e.Name == "ver"))
-								version = type.Parameters.Single(e => e.Name == "ver").Value.Value ?? "unknown";
-							else if (type.Parameters.Any(e => e.Name == "version"))
-								version = type.Parameters.Single(e => e.Name == "version").Value.Value ?? "unknown";
-
-							Console.WriteLine(
-								$"Type: {type.Type}, SubType: {type.SubTypeWithoutSuffix}, Suffix: {type.Suffix}, Charset: {type.Charset}, Version: {version}");
-						}
-
-						Console.WriteLine($"1. Endpoint: {context.GetEndpoint()?.DisplayName ?? "(null)"}");
-						await next(context);
-						break;
-					}
-			}
-		});
+		app.Use(Middleware);
 
 		logger.LogInformation("Mapping controllers");
 		app.MapControllers();
 
 		logger.LogInformation("Starting the app");
 		app.Run();
+	}
+
+	[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+	private static async Task Middleware(HttpContext context, RequestDelegate next)
+	{
+		Console.WriteLine($"{context.Request.Method} {context.Request.Path}");
+		foreach (var h in context.Request.Headers)
+		{
+			Console.WriteLine($"{h.Key}: {h.Value}");
+		}
+
+		switch (context.Request.Method)
+		{
+			case "GET":
+			case "HEAD":
+			default:
+			{
+				if (MediaTypeHeaderValue.TryParse(context.Request.ContentType, out var type))
+				{
+					var version = "unknown";
+
+					var parameters = string.Join(", ", type.Parameters.Select(p => $"{p.Name}: {p.Value}").ToArray());
+					if (type.Parameters.Any(e => e.Name == "v"))
+					{
+						version = type.Parameters.Single(e => e.Name == "v").Value.Value ?? "unknown";
+					}
+					else if (type.Parameters.Any(e => e.Name == "ver"))
+					{
+						version = type.Parameters.Single(e => e.Name == "ver").Value.Value ?? "unknown";
+					}
+					else if (type.Parameters.Any(e => e.Name == "version"))
+					{
+						version = type.Parameters.Single(e => e.Name == "version").Value.Value ?? "unknown";
+					}
+
+					Console.WriteLine($"Type: {type.Type}, SubType: {type.SubTypeWithoutSuffix}, Suffix: {type.Suffix}, Charset: {type.Charset}, Version: {version}");
+				}
+
+				Console.WriteLine($"1. Endpoint: {context.GetEndpoint()?.DisplayName ?? "(null)"}");
+				await next(context);
+				break;
+			}
+		}
 	}
 }
 

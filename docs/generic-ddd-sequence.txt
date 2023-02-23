@@ -1,0 +1,38 @@
+title Generic Domain-Driven Scenario
+
+participantgroup WebAPI\nLayer
+participant "Controller" as api
+end
+participantgroup Application\nLayer
+participant "Application\nService" as appservice
+participant "Repository" as repository
+end
+participantgroup Domain\nLayer
+participant "Aggregate\nRoot" as aggregateroot
+end
+participantgroup Infrastructure\nLayer
+participant "Infrastructure\nService" as infservice
+participant "Data\nService" as dataservice
+end
+
+activate api
+api->appservice:
+activate appservice
+appservice->(1)repository:
+activate repository
+repository->(1)dataservice:
+activate dataservice
+repository<--dataservice:
+deactivateafter dataservice
+deactivateafter repository
+appservice->aggregateroot:
+activate aggregateroot
+appservice<--aggregateroot:
+deactivateafter aggregateroot
+api<--appservice:
+appservice->infservice:
+activate infservice
+appservice<--infservice:
+deactivateafter infservice
+deactivateafter appservice
+deactivateafter api

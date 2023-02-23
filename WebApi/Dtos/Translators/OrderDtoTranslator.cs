@@ -1,53 +1,61 @@
-﻿using Core;
-using Core.Builders;
+﻿using Domain;
+using Domain.Builders;
+using WebApi.Dtos.Validators;
 
 namespace WebApi.Dtos.Translators;
 
 public static class OrderDtoTranslator
 {
-    public static Order ToDomain(OrderDto order)
-    {
-        if(!order.OrderDate.HasValue) throw new ArgumentException($"{nameof(order)}.{nameof(order.OrderDate)} is required.", nameof(order));
-        if(order.ShippingAddress is null) throw new ArgumentException($"{nameof(order)}.{nameof(order.ShippingAddress)} is required.", nameof(order));
-        if (order.OrderItems == null) throw new ArgumentException($"{nameof(order)}.{nameof(order.OrderItems)} is required.", nameof(order));
+	/// <summary>
+	/// Translate an OrderTo to a domain Order
+	/// </summary>
+	/// <param name="order">The DTO</param>
+	/// <returns>A domain object</returns>
+	/// <exception cref="ArgumentException">When the <paramref name="order"/> properties are not valid.</exception>
+	public static Order ToDomain(this OrderDto order)
+	{
+		if (!OrderDtoValidator.TryValidate(order, out var result))
+		{
+			throw new ArgumentException(result!.ErrorMessage, nameof(order));
+		}
 
-        var builder = new OrderBuilder()
-            .At(order.OrderDate.Value.DateTime)
-            .ShippingTo(order.ShippingAddress.ToDomain());
+		var builder = new OrderBuilder()
+			.At(DateTime.SpecifyKind(order.OrderDate!.Value.DateTime, DateTimeKind.Utc))
+			.ShippingTo(order.ShippingAddress!.ToDomain());
 
-        if(order.BillingAddress is not null)
-        {
-            builder.BillingTo(order.BillingAddress.ToDomain());
-        }
+		if (order.BillingAddress is not null)
+		{
+			builder.BillingTo(order.BillingAddress.ToDomain());
+		}
 
-        foreach (var p in order.OrderItems)
-        {
-            var domain = p.ToDomain();
-            builder.WithProduct(domain.SkuText, domain.UnitPrice, domain.UnitQuantity);
-        }
+		foreach (var p in order.OrderItems!)
+		{
+			var domain = p.ToDomain();
+			builder.WithProduct(domain.SkuText, domain.UnitPrice, domain.UnitQuantity);
+		}
 
-        return builder.Build();
-    }
+		return builder.Build();
+	}
 
-    public static OrderDto FromDomain(Order order)
-    {
-        var result = new OrderDto
-        {
-            OrderDate = order.DateTime,
-            OrderItems = order.OrderItems.Select(i=>i.FromDomain()),
-            ShippingAddress = order.ShippingAddress.FromDomain(),
-            BillingAddress = order?.BillingAddress?.FromDomain()
-        };
-        return result;
-    }
+	public static OrderDto FromDomain(this Order order)
+	{
+		var result = new OrderDto
+		{
+			OrderDate = order.DateTime,
+			OrderItems = order.OrderItems.Select(i => i.FromDomain()),
+			ShippingAddress = order.ShippingAddress.FromDomain(),
+			BillingAddress = order.BillingAddress?.FromDomain()
+		};
+		return result;
+	}
 
-    public static OrderLineItem ToDomain(OrderItemDto item)
-    {
-        return item.ToDomain();
-    }
+	public static OrderLineItem ToDomain(OrderItemDto item)
+	{
+		return item.ToDomain();
+	}
 
-    public static PostalAddress ToDomain(PostalAddressDto address)
-    {
-        return address.ToDomain();
-    }
+	public static PostalAddress ToDomain(PostalAddressDto address)
+	{
+		return address.ToDomain();
+	}
 }

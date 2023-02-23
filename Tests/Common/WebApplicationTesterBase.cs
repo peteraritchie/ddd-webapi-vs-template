@@ -5,25 +5,25 @@ namespace Tests.Common;
 
 public abstract class WebApplicationTesterBase : IClassFixture<WebApplicationFactory<Program>>, IDisposable
 {
-    protected readonly HttpClient client;
+	protected readonly HttpClient client;
 
-    protected WebApplicationTesterBase(WebApplicationFactory<Program> webApplicationFactory)
-    {
-        client = webApplicationFactory.CreateClient();
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            client.Dispose();
-        }
-    }
+	protected WebApplicationTesterBase(WebApplicationFactory<Program> webApplicationFactory)
+	{
+		client = webApplicationFactory.CreateClient();
+	}
 
 #pragma warning disable CA1816 // There are no reason to create finalizers
-    public void Dispose()
+	public void Dispose()
 #pragma warning restore CA1816
-    {
-        Dispose(true);
-    }
+	{
+		Dispose(true);
+	}
+
+	protected virtual void Dispose(bool disposing)
+	{
+		if (disposing)
+		{
+			client.Dispose();
+		}
+	}
 }

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using WebApi.Common;
@@ -7,83 +8,87 @@ using WebApi.Common;
 namespace WebApi.Infrastructure;
 
 /// <summary>
-/// ASP.NET Core middleware implementation to deal with exceptions.
+///     ASP.NET Core middleware implementation to deal with exceptions.
 /// </summary>
 public class CustomExceptionMiddleware
 {
-    private readonly RequestDelegate next;
-    private readonly ILogger<CustomExceptionMiddleware> logger;
-    private readonly ProblemDetailsFactory problemDetailsFactory;
+	private readonly ILogger<CustomExceptionMiddleware> logger;
+	private readonly RequestDelegate next;
+	private readonly ProblemDetailsFactory problemDetailsFactory;
 
-    /// <summary>
-    /// CustomExceptionMiddleware constructor
-    /// </summary>
-    /// <param name="next">The next delegate, provided by the framework</param>
-    /// <param name="logger">For logging</param>
-    /// <param name="problemDetailsFactory">To create <seealso cref="ProblemDetails"/> instances</param>
-    public CustomExceptionMiddleware(RequestDelegate next, ILogger<CustomExceptionMiddleware> logger,
-        ProblemDetailsFactory problemDetailsFactory)
-    {
-        this.next = next;
-        this.logger = logger;
-        this.problemDetailsFactory = problemDetailsFactory;
-    }
+	/// <summary>
+	///     CustomExceptionMiddleware constructor
+	/// </summary>
+	/// <param name="next">The next delegate, provided by the framework</param>
+	/// <param name="logger">For logging</param>
+	/// <param name="problemDetailsFactory">To create <seealso cref="ProblemDetails" /> instances</param>
+	public CustomExceptionMiddleware(RequestDelegate next, ILogger<CustomExceptionMiddleware> logger,
+		ProblemDetailsFactory problemDetailsFactory)
+	{
+		this.next = next;
+		this.logger = logger;
+		this.problemDetailsFactory = problemDetailsFactory;
+	}
 
-    /// <summary>
-    /// To support invocation by the framework
-    /// </summary>
-    /// <param name="httpContext">The HTTP request context</param>
-    public async Task InvokeAsync(HttpContext httpContext)
-    {
-        try
-        {
-            await next(httpContext);
-        }
-        catch (Exception exception)
-        {
-            var message = exception.Message;
+	/// <summary>
+	///     To support invocation by the framework
+	/// </summary>
+	/// <param name="httpContext">The HTTP request context</param>
+	public async Task InvokeAsync(HttpContext httpContext)
+	{
+		try
+		{
+			await next(httpContext);
+		}
+		catch (Exception exception)
+		{
+			var message = exception.Message;
 
-            logger.LogError("Error: {message}", message);
-            await HandleExceptionAsync(httpContext, exception);
-        }
-    }
+			logger.LogError("Error: {message}", message);
+			await HandleExceptionAsync(httpContext, exception);
+		}
+	}
 
-    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
-    {
-        HttpStatusCode statusCode;
-        string detail;
+	private async Task HandleExceptionAsync(HttpContext context, Exception exception)
+	{
+		HttpStatusCode statusCode;
+		string detail;
 
-        switch (exception)
-        {
-            default:
-                statusCode = HttpStatusCode.InternalServerError;
-                detail = exception.Message;
-                break;
-        }
+		switch (exception)
+		{
+			case EntityNotFoundException ex:
+				statusCode = HttpStatusCode.NotFound;
+				detail = $"Entity with ID {ex.Id} does not exist.";
+				break;
+			default:
+				statusCode = HttpStatusCode.InternalServerError;
+				detail = exception.Message;
+				break;
+		}
 
 
-        var problemDetails = CreateProblemDetails(context, statusCode, detail);
+		var problemDetails = CreateProblemDetails(context, statusCode, detail);
 
-        await WriteProblemDetails(context, problemDetails);
-    }
+		await WriteProblemDetails(context, problemDetails);
+	}
 
-    private static async Task WriteProblemDetails(HttpContext context, ProblemDetails problemDetails)
-    {
-        context.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;
-        context.Response.ContentType = problemDetails.GetContentType();
-        await JsonSerializer.SerializeAsync(
-            context.Response.Body,
-            problemDetails
-        );
-    }
+	private static async Task WriteProblemDetails(HttpContext context, ProblemDetails problemDetails)
+	{
+		context.Response.StatusCode = problemDetails.Status!.Value;
+		context.Response.ContentType = problemDetails.GetContentType();
+		await JsonSerializer.SerializeAsync(
+			context.Response.Body,
+			problemDetails
+		);
+	}
 
-    private ProblemDetails CreateProblemDetails(HttpContext context, HttpStatusCode statusCode, string detail)
-    {
-        using var m = new HttpResponseMessage(statusCode);
-        var problemDetails = problemDetailsFactory.CreateProblemDetails(context,
-            title: m.ReasonPhrase,
-            detail: detail,
-            statusCode: context.Response.StatusCode);
-        return problemDetails;
-    }
+	private ProblemDetails CreateProblemDetails(HttpContext context, HttpStatusCode statusCode, string detail)
+	{
+		using var m = new HttpResponseMessage(statusCode);
+		var problemDetails = problemDetailsFactory.CreateProblemDetails(context,
+			title: m.ReasonPhrase,
+			detail: detail,
+			statusCode: (int)statusCode);
+		return problemDetails;
+	}
 }

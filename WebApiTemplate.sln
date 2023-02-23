@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{7682BC82-9D57-4F62-9842-0B6EE1190D6A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{FC8E2A96-9013-4974-BCF4-A7E679B99D6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{FC8E2A96-9013-4974-BCF4-A7E679B99D6A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{A4B2650E-D1A7-4CF8-8498-4B5E0A159181}"
 EndProject
@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{F4C36B53-3737-468A-87D0-E1860ADD885B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{A4B2650E-D1A7-4CF8-8498-4B5E0A159181}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4B2650E-D1A7-4CF8-8498-4B5E0A159181}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4B2650E-D1A7-4CF8-8498-4B5E0A159181}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4C36B53-3737-468A-87D0-E1860ADD885B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4C36B53-3737-468A-87D0-E1860ADD885B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4C36B53-3737-468A-87D0-E1860ADD885B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4C36B53-3737-468A-87D0-E1860ADD885B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
