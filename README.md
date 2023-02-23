@@ -129,5 +129,6 @@ Tests verify controllers via test server.
 
 [Vernon]: https://localhost
 [Dahan]: https://localhost
-
-John: places for EDA to fit...
+<!--
+John: places for EDA to fit... 
+-->
