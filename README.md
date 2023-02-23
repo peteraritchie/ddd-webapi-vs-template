@@ -104,6 +104,10 @@ Structure:
   - todo:
 - Tests
 
+## Flow Relationships
+
+![generic][docs/generic-ddd-sequence.svg
+]
 ## WebAPI
 
 DTO are anemic data containers. Validation, serialization, etc. requirements use asp.net specific attributes. 
