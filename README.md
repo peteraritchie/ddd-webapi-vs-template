@@ -106,8 +106,14 @@ Structure:
 
 ## Flow Relationships
 
-![generic][docs/generic-ddd-sequence.svg
-]
+Basic Flow
+
+![generic](docs/generic-ddd-sequence.svg)
+
+More Detailed Flow
+
+![specific](docs/specific-ddd-sequence.svg)
+
 ## WebAPI
 
 DTO are anemic data containers. Validation, serialization, etc. requirements use asp.net specific attributes. 
