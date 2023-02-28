@@ -22,8 +22,8 @@ public static class StartupSetup
 		services.AddSingleton<IAccountRepository>(
 			sp => new InMemoryAccountRepository(new Dictionary<Guid, Account>
 			{
-				{ Guid.Parse("478131a6-52fe-4dd6-9bc8-f2e01b34be6c"), new Account(10_000m) },
-				{ Guid.Parse("f5eb6500-4ab6-466c-b483-325d21e67344"), new Account(3_000m) }
+				{ Guid.Parse("478131a6-52fe-4dd6-9bc8-f2e01b34be6c"), new Account(new AccountHolder(string.Empty, string.Empty, string.Empty), 10_000m) },
+				{ Guid.Parse("f5eb6500-4ab6-466c-b483-325d21e67344"), new Account(new AccountHolder(string.Empty, string.Empty, string.Empty), 3_000m) }
 			}));
 		return services;
 	}

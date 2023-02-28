@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Net.Http;
-
 using Application.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +32,7 @@ public class CustomExceptionMiddlewareShould
 		Assert.Equal(
 			"{\"title\":\"One or more validation errors occurred.\",\"status\":400,\"errors\":{\"field\":[\"out of range\"]}}",
 			text);
+		Assert.Equal(StatusCodes.Status400BadRequest, httpContext.Response.StatusCode);
 	}
 
 	[Fact]
@@ -59,6 +58,8 @@ public class CustomExceptionMiddlewareShould
 	{
 		var httpResponse = new Mock<HttpResponse>()
 			.SetupProperty(m => m.Body, bodyStream);
+		httpResponse.SetupProperty(m => m.StatusCode);
+
 		var httpContextMock = new Mock<HttpContext>();
 		httpContextMock
 			.SetupGet(m => m.Response)
@@ -71,6 +72,7 @@ public class CustomExceptionMiddlewareShould
 			.Throws<Exception>();
 		return requestDelegateMock;
 	}
+
 	private static Mock<RequestDelegate> SetupRequestDelegateMock<TException>(
 		Stream bodyStream,
 		TException exception,
@@ -78,6 +80,8 @@ public class CustomExceptionMiddlewareShould
 	{
 		var httpResponse = new Mock<HttpResponse>()
 			.SetupProperty(m => m.Body, bodyStream);
+		httpResponse.SetupProperty(m => m.StatusCode);
+
 		var httpContextMock = new Mock<HttpContext>();
 		httpContextMock
 			.SetupGet(m => m.Response)

@@ -1,8 +1,6 @@
 using Domain.Abstractions;
 
 using Microsoft.Extensions.DependencyInjection;
-using PRI.Messaging.Patterns;
-using PRI.Messaging.Primitives;
 
 namespace Infrastructure;
 

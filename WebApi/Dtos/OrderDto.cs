@@ -8,7 +8,7 @@ namespace WebApi.Dtos;
 ///     Order
 /// </summary>
 [DisplayName("Order")]
-public record OrderDto
+public class OrderDto
 {
 	/// <summary>
 	///     The date when the order was placed

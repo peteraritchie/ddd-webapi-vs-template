@@ -22,7 +22,7 @@ public class OrderControllerShould
 	[Fact]
 	public async Task Test()
 	{
-		var result = await controller.CreateOrderAsync(TestData.Order);
+		var result = await controller.CreateOrderAsync(TestData.CreateOrder());
 
 		Assert.NotNull(result);
 	}
@@ -33,7 +33,7 @@ public class OrderControllerShould
 	{
 		controller.ModelState.AddModelError("one", "message");
 
-		var result = await controller.CreateOrderAsync(TestData.MinimalOrder);
+		var result = await controller.CreateOrderAsync(TestData.CreateMinimalOrder());
 
 		Assert.NotNull(result);
 		var objectResult = Assert.IsType<ObjectResult>(result);

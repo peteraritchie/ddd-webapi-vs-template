@@ -9,13 +9,14 @@ public class InMemoryOrderRepositoryShould
 {
 	private static readonly Guid defaultGuid = Guid.NewGuid();
 
-	private readonly InMemoryOrderRepository repository = new(defaultGuid, TestData.MinimalOrder.ToDomain());
+	private readonly InMemoryOrderRepository repository =
+		new(defaultGuid, TestData.CreateMinimalOrder().ToDomain());
 
 	[Fact]
 	public async Task CreateSuccessfully()
 	{
 		var guid = Guid.NewGuid();
-		await repository.CreateAsync(guid, TestData.Order.ToDomain());
+		await repository.CreateAsync(guid, TestData.CreateOrder().ToDomain());
 		var order = await repository.GetAsync(guid);
 		Assert.NotNull(order);
 		Assert.NotNull(order.BillingAddress);
@@ -39,7 +40,7 @@ public class InMemoryOrderRepositoryShould
 	{
 		var order = await repository.GetAsync(defaultGuid);
 		Assert.Null(order.BillingAddress);
-		await repository.UpdateAsync(defaultGuid, TestData.Order.ToDomain());
+		await repository.UpdateAsync(defaultGuid, TestData.CreateOrder().ToDomain());
 		order = await repository.GetAsync(defaultGuid);
 		Assert.NotNull(order.BillingAddress);
 	}
@@ -47,7 +48,7 @@ public class InMemoryOrderRepositoryShould
 	[Fact]
 	public async Task ThrowCreatingExisting()
 	{
-		await Assert.ThrowsAsync<EntityAlreadyExistsException>(async () => await repository.CreateAsync(defaultGuid, TestData.Order.ToDomain()));
+		await Assert.ThrowsAsync<EntityAlreadyExistsException>(async () => await repository.CreateAsync(defaultGuid, TestData.CreateOrder().ToDomain()));
 	}
 
 	[Fact]
@@ -61,6 +62,6 @@ public class InMemoryOrderRepositoryShould
 	public async Task ThrowUpdatingNonExisting()
 	{
 		await repository.DeleteAsync(defaultGuid);
-		await Assert.ThrowsAsync<EntityNotFoundException>(async () => await repository.UpdateAsync(defaultGuid, TestData.Order.ToDomain()));
+		await Assert.ThrowsAsync<EntityNotFoundException>(async () => await repository.UpdateAsync(defaultGuid, TestData.CreateOrder().ToDomain()));
 	}
 }

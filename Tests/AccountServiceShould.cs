@@ -14,7 +14,10 @@ public class AccountServiceShould
 		mockRepository = new Mock<IAccountRepository>();
 		mockRepository
 			.Setup(m => m.GetAsync(It.IsAny<Guid>()))
-			.Returns(Task.FromResult(new Account(100m) { AccountHolder = new AccountHolder { Email = "" } }));
+			.Returns(Task.FromResult(new Account(new AccountHolder(string.Empty, string.Empty, string.Empty), 100m)
+			{
+				AccountHolder = new AccountHolder( FirstName: string.Empty, LastName: string.Empty, Email: string.Empty)
+			}));
 	}
 
 	[Fact]

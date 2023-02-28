@@ -11,6 +11,11 @@ public class ValidationsException : Exception
 		this.results = new List<ValidationResult>(results);
 	}
 
+	public ValidationsException(ValidationResult result)
+	{
+		results = new List<ValidationResult> { result };
+	}
+
 	public void Add(ValidationResult result)
 	{
 		results.Add(result);

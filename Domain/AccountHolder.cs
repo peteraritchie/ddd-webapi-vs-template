@@ -1,8 +1,8 @@
 ﻿namespace Domain;
 
-public class AccountHolder
+public record AccountHolder(string LastName, string FirstName, string Email)
 {
-	public string LastName { get; }
-	public string FirstName { get; }
-	public string Email { get; set; }
+	public string LastName { get; } = LastName ?? throw new ArgumentNullException(nameof(LastName));
+	public string FirstName { get; } = FirstName ?? throw new ArgumentNullException(nameof(FirstName));
+	public string Email { get; } = Email ?? throw new ArgumentNullException(nameof(Email));
 }

@@ -1,4 +1,3 @@
-using Domain;
 using WebApi.Dtos;
 using WebApi.Dtos.Translators;
 
@@ -9,44 +8,55 @@ public sealed class TranslatingDtosShould
 	[Fact]
 	public void ValidOrderItemDtoShouldTranslateSuccessfully()
 	{
-		OrderLineItem actual = TestData.OrderItem.ToDomain();
-		Assert.Equal(TestData.OrderItem.SkuText, actual.SkuText);
-		Assert.Equal(TestData.OrderItem.UnitPrice, actual.UnitPrice);
-		Assert.Equal(TestData.OrderItem.UnitQuantity, actual.UnitQuantity);
+		var orderItemDto = TestData.CreateOrderItem();
+		var actual = orderItemDto.ToDomain();
+		Assert.Equal(orderItemDto.SkuText, actual.SkuText);
+		Assert.Equal(orderItemDto.UnitPrice, actual.UnitPrice);
+		Assert.Equal(orderItemDto.UnitQuantity, actual.UnitQuantity);
 	}
 
 	[Fact]
 	public void OrderItemDtoMissingQuantityShouldThrow()
 	{
-		var orderItem = TestData.OrderItem with { UnitQuantity = default };
+		var orderItem = TestData.CreateOrderItem();
+		orderItem.UnitQuantity = default;
+
 		Assert.Throws<ArgumentException>(() => orderItem.ToDomain());
 	}
 
 	[Fact]
 	public void OrderItemDtoMissingPriceShouldThrow()
 	{
-		var orderItem = TestData.OrderItem with { UnitPrice = default };
+		var orderItem = TestData.CreateOrderItem();
+		orderItem.UnitPrice = default;
+
 		Assert.Throws<ArgumentException>(() => orderItem.ToDomain());
 	}
 
 	[Fact]
 	public void OrderItemDtoMissingSkuShouldThrow()
 	{
-		var orderItem = TestData.OrderItem with { SkuText = default };
+		var orderItem = TestData.CreateOrderItem();
+		orderItem.SkuText = default;
+
 		Assert.Throws<ArgumentException>(() => orderItem.ToDomain());
 	}
 
 	[Fact]
 	public void OrderItemDtoZeroQuantityShouldThrow()
 	{
-		var orderItem = TestData.OrderItem with { UnitQuantity = 0 };
+		var orderItem = TestData.CreateOrderItem();
+		orderItem.UnitQuantity = 0;
+
 		Assert.Throws<ArgumentOutOfRangeException>(() => orderItem.ToDomain());
 	}
 
 	[Fact]
 	public void OrderItemDtoInvalidQuantityShouldThrow()
 	{
-		var orderItem = TestData.OrderItem with { UnitQuantity = ushort.MaxValue };
+		var orderItem = TestData.CreateOrderItem();
+		orderItem.UnitQuantity = ushort.MaxValue;
+
 		Assert.Throws<ArgumentOutOfRangeException>(() => orderItem.ToDomain());
 	}
 
@@ -59,73 +69,88 @@ public sealed class TranslatingDtosShould
 	[Fact]
 	public void SucceedWithValidAddress()
 	{
-		var postalAddress = TestData.ShippingAddress.ToDomain();
+		var shippingAddressDto = TestData.CreateShippingAddress();
+		var postalAddress = shippingAddressDto.ToDomain();
 		Assert.NotNull(postalAddress);
-		Assert.Equal(TestData.ShippingAddress.AlternateLocationText, postalAddress.AlternateLocationText);
-		Assert.Equal(TestData.ShippingAddress.AttentionText, postalAddress.AttentionText);
-		Assert.Equal(TestData.ShippingAddress.PostalCodeText, postalAddress.PostalCodeText);
-		Assert.Equal(TestData.ShippingAddress.StateName, postalAddress.StateName);
-		Assert.Equal(TestData.ShippingAddress.StreetAddress, postalAddress.StreetAddress);
+		Assert.Equal(shippingAddressDto.AlternateLocationText, postalAddress.AlternateLocationText);
+		Assert.Equal(shippingAddressDto.AttentionText, postalAddress.AttentionText);
+		Assert.Equal(shippingAddressDto.PostalCodeText, postalAddress.PostalCodeText);
+		Assert.Equal(shippingAddressDto.StateName, postalAddress.StateName);
+		Assert.Equal(shippingAddressDto.StreetAddress, postalAddress.StreetAddress);
 	}
 
 	[Fact]
 	public void ThrowsWithMissingStreetAddress()
 	{
-		var address = TestData.ShippingAddress with { StreetAddress = default};
+		var address = TestData.CreateShippingAddress();
+		address.StreetAddress = default;
+
 		Assert.Throws<ArgumentException>(()=>address.ToDomain());
 	}
 
 	[Fact]
 	public void ThrowsWithMissingCityName()
 	{
-		var address = TestData.ShippingAddress with { CityName = default};
+		var address = TestData.CreateShippingAddress();
+		address.CityName = default;
+
 		Assert.Throws<ArgumentException>(()=>address.ToDomain());
 	}
 
 	[Fact]
 	public void ThrowsWithMissingStateName()
 	{
-		var address = TestData.ShippingAddress with { StateName = default};
+		var address = TestData.CreateShippingAddress();
+		address.StateName = default;
+
 		Assert.Throws<ArgumentException>(()=>address.ToDomain());
 	}
 
 	[Fact]
 	public void ThrowsWithMissingPostalCodeText()
 	{
-		var address = TestData.ShippingAddress with { PostalCodeText= default};
+		var address = TestData.CreateShippingAddress();
+		address.PostalCodeText = default;
+
 		Assert.Throws<ArgumentException>(()=>address.ToDomain());
 	}
 
 	[Fact]
 	public void SucceedWithMinimalOrder()
 	{
-		Assert.NotNull(TestData.MinimalOrder.ToDomain());
+		Assert.NotNull(TestData.CreateMinimalOrder().ToDomain());
 	}
 
 	[Fact]
 	public void SucceedWithBillingAddressOrder()
 	{
-		Assert.NotNull(TestData.Order.ToDomain());
+		Assert.NotNull(TestData.CreateOrder().ToDomain());
 	}
 
 	[Fact]
 	public void ThrowWithMissingOrderDate()
 	{
-		var order = TestData.MinimalOrder with {OrderDate = default};
+		var order = TestData.CreateMinimalOrder();
+		order.OrderDate = default;
+
 		Assert.Throws<ArgumentException>(order.ToDomain);
 	}
 
 	[Fact]
 	public void ThrowWithMissingShippingAddress()
 	{
-		var order = TestData.MinimalOrder with { ShippingAddress = default};
+		var order = TestData.CreateMinimalOrder();
+		order.ShippingAddress = default;
+
 		Assert.Throws<ArgumentException>(order.ToDomain);
 	}
 
 	[Fact]
 	public void ThrowWithMissingOrderItems()
 	{
-		var order = TestData.MinimalOrder with { OrderItems = default};
+		var order = TestData.CreateMinimalOrder();
+		order.OrderItems = default;
+
 		Assert.Throws<ArgumentException>(order.ToDomain);
 	}
 }

@@ -18,7 +18,7 @@ public class FundsControllerShould
 		this.fundsController = CreateFundsController();
 	}
 
-	private FundsController CreateFundsController()
+	private static FundsController CreateFundsController()
 	{
 		var httpContext = new DefaultHttpContext();
 		httpContext.Request.Headers["Correlation-ID"] = Guid.NewGuid().ToString();

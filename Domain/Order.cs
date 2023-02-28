@@ -1,16 +1,11 @@
 ﻿namespace Domain;
 
-public class Order
+public record Order
 {
 	private readonly List<OrderLineItem> orderItems;
 
-	public Order(DateTime dateTime, IEnumerable<OrderLineItem> orderItems, PostalAddress shippingAddress)
-		: this(dateTime, orderItems, shippingAddress, default)
-	{
-	}
-
 	public Order(DateTime dateTime, IEnumerable<OrderLineItem> orderItems, PostalAddress shippingAddress,
-		PostalAddress? billingAddress)
+		PostalAddress? billingAddress = default)
 	{
 		DateTime = dateTime;
 		this.orderItems = new List<OrderLineItem>(orderItems);

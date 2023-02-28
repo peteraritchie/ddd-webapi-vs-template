@@ -39,7 +39,7 @@ internal static class OrderDtoTranslator
 			DateTime = order.DateTime,
 			OrderItems = order.OrderItems.FromDomain(),
 			ShippingAddress = order.ShippingAddress.FromDomain(),
-			BillingAddress = order.BillingAddress.FromDomain(),
+			BillingAddress = order.BillingAddress?.FromDomain(),
 		};
 	}
 

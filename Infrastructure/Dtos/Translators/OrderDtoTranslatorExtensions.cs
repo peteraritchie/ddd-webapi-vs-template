@@ -16,6 +16,8 @@ public static class OrderDtoTranslatorExtensions
 
 	public static PostalAddressDto FromDomain(this PostalAddress address)
 	{
+		ArgumentNullException.ThrowIfNull(address);
+
 		return new PostalAddressDto
 		{
 			AttentionText = address.AttentionText,

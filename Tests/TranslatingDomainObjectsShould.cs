@@ -7,14 +7,15 @@ public class TranslatingDomainObjectsShould
 	[Fact]
 	public void Succeed()
 	{
-		var order = TestData.Order.ToDomain();
+		var dto = TestData.CreateOrder();
+		var order = dto.ToDomain();
 		var orderDto = order.FromDomain();
-		Assert.Equal(TestData.Order.OrderDate, orderDto.OrderDate);
+		Assert.Equal(dto.OrderDate, orderDto.OrderDate);
 	}
 	[Fact]
 	public void SucceedWithMinimalOrder()
 	{
-		var order = TestData.MinimalOrder.ToDomain();
+		var order = TestData.CreateMinimalOrder().ToDomain();
 		Assert.NotNull(order.FromDomain());
 	}
 }

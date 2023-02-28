@@ -7,7 +7,7 @@ namespace Tests;
 public class InMemoryAccountRepositoryShould
 {
 	private static readonly Guid defaultGuid = Guid.NewGuid();
-	private readonly Account stubAccount = new Account(100m);
+	private readonly Account stubAccount = new(new AccountHolder(string.Empty, string.Empty, string.Empty), 100m);
 	private readonly InMemoryAccountRepository repository;
 
 	public InMemoryAccountRepositoryShould()

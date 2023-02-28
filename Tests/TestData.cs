@@ -11,32 +11,47 @@ public static class TestData
 		TimeSpan.FromHours(0));
 	//public static readonly DateTimeOffset OrderDate = DateTime.SpecifyKind(new DateTime(2023, 02, 10, 2, 41, 9, 5), DateTimeKind.Utc);
 
-	public static readonly PostalAddressDto ShippingAddress = new()
+	public static PostalAddressDto CreateShippingAddress()
 	{
-		StreetAddress = "14544 ROGUE RIVER DR",
-		CityName = "CHESTERFIELD",
-		StateName = "MO",
-		PostalCodeText = "63017"
+		return new PostalAddressDto
+		{
+			StreetAddress = "14544 ROGUE RIVER DR",
+			CityName = "CHESTERFIELD",
+			StateName = "MO",
+			PostalCodeText = "63017"
+		};
+	}
+
+	public static IEnumerable<OrderItemDto> CreateOrderItems() => new[]
+	{
+		CreateOrderItem()
 	};
 
-	public static readonly OrderItemDto OrderItem = new()
+	public static OrderItemDto CreateOrderItem()
 	{
-		SkuText = "abc123",
-		UnitQuantity = 2,
-		UnitPrice = 11.50m
+		return new OrderItemDto()
+		{
+			SkuText = "abc123",
+			UnitQuantity = 2,
+			UnitPrice = 11.50m
+		};
+	}
+
+	public static OrderDto CreateMinimalOrder() => new()
+	{
+		OrderDate = OrderDate,
+		ShippingAddress = CreateShippingAddress(),
+		OrderItems = CreateOrderItems()
 	};
 
-	public static OrderDto MinimalOrder => new()
+	public static OrderDto CreateOrder()
 	{
-		OrderDate = OrderDate,
-		ShippingAddress = ShippingAddress,
-		OrderItems = new[] { OrderItem }
-	};
-	public static OrderDto Order => new()
-	{
-		OrderDate = OrderDate,
-		ShippingAddress = ShippingAddress,
-		BillingAddress = ShippingAddress,
-		OrderItems = new[] { OrderItem }
-	};
+		return new OrderDto
+		{
+			OrderDate = OrderDate,
+			ShippingAddress = CreateShippingAddress(),
+			BillingAddress = CreateShippingAddress(),
+			OrderItems = new[] { CreateOrderItem() }
+		};
+	}
 }

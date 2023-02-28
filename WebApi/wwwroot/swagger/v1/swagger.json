@@ -1,0 +1,259 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "version": "1.0"
+  },
+  "paths": {
+    "/Funds": {
+      "post": {
+        "tags": [
+          "Funds"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundsTransferRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundsTransferRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundsTransferRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/Orders/{orderId}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get a order by id",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "The order id to obtain.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "76078b26-6130-4b93-9c26-3a37616e1244"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/Orders": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Create an order",
+        "requestBody": {
+          "content": {
+            "application/vnd.contoso.sales.order+json; charset=utf-8; version=1.0": {
+              "schema": {
+                "$ref": "#/components/schemas/Order"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FundsTransferRequest": {
+        "required": [
+          "amount",
+          "destinationAccountId",
+          "sourceAccountId"
+        ],
+        "type": "object",
+        "properties": {
+          "sourceAccountId": {
+            "type": "string",
+            "description": "The source account ID",
+            "format": "uuid",
+            "example": "478131a6-52fe-4dd6-9bc8-f2e01b34be6c"
+          },
+          "destinationAccountId": {
+            "type": "string",
+            "description": "The target account ID",
+            "format": "uuid",
+            "example": "f5eb6500-4ab6-466c-b483-325d21e67344"
+          },
+          "amount": {
+            "maximum": 3000,
+            "minimum": 0.01,
+            "type": "number",
+            "description": "The amount to transfer",
+            "format": "double",
+            "example": 200
+          }
+        },
+        "additionalProperties": false
+      },
+      "Order": {
+        "required": [
+          "orderDate",
+          "orderItems",
+          "shippingAddress"
+        ],
+        "type": "object",
+        "properties": {
+          "orderDate": {
+            "type": "string",
+            "description": "The date when the order was placed",
+            "format": "date-time",
+            "example": "2023-02-09T17:03:54.7629825+00:00"
+          },
+          "orderItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            },
+            "description": "Collection of order items"
+          },
+          "shippingAddress": {
+            "$ref": "#/components/schemas/PostalAddress"
+          },
+          "billingAddress": {
+            "$ref": "#/components/schemas/PostalAddress"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Order"
+      },
+      "OrderItem": {
+        "required": [
+          "price",
+          "qty",
+          "sku"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string",
+            "description": "The SKU of the purchased item",
+            "example": "abc123"
+          },
+          "qty": {
+            "maximum": 999,
+            "minimum": 1,
+            "type": "integer",
+            "description": "The quantity of items",
+            "format": "int32",
+            "example": 1
+          },
+          "price": {
+            "maximum": 1000000,
+            "minimum": 0,
+            "type": "number",
+            "description": "The price of the item",
+            "format": "double",
+            "example": 9.99
+          }
+        },
+        "additionalProperties": false,
+        "description": "OrderItem"
+      },
+      "PostalAddress": {
+        "required": [
+          "cityName",
+          "postalCode",
+          "stateName",
+          "streetAddress"
+        ],
+        "type": "object",
+        "properties": {
+          "attentionText": {
+            "type": "string",
+            "description": "Optional attention line text",
+            "nullable": true,
+            "example": "ATTN: JOHN SMITH"
+          },
+          "streetAddress": {
+            "maxLength": 46,
+            "minLength": 0,
+            "type": "string",
+            "description": "Street number and address",
+            "example": "14544 ROGUE RIVER DR"
+          },
+          "alternateLocationText": {
+            "maxLength": 46,
+            "minLength": 0,
+            "type": "string",
+            "description": "Optional alternate location text",
+            "nullable": true,
+            "example": "# 128"
+          },
+          "cityName": {
+            "maxLength": 46,
+            "minLength": 0,
+            "type": "string",
+            "description": "City Name",
+            "example": "CHESTERFIELD"
+          },
+          "stateName": {
+            "maxLength": 46,
+            "minLength": 0,
+            "type": "string",
+            "description": "State Name",
+            "example": "MO"
+          },
+          "postalCode": {
+            "minLength": 1,
+            "pattern": "^((?<USZip>\\d{5})|(?<USZipPlusFour>\\d{5}-\\d{4})|(?<Canadian>[ABCEGHJ-NPRSTVXY]\\d[ABCEGHJ-NPRSTV-Z][ -]?\\d[ABCEGHJ-NPRSTV-Z]\\d)|(?<Mexican>\\d{5}))$",
+            "type": "string",
+            "description": "US, Canadian, or Mexican postal code",
+            "example": "63017"
+          }
+        },
+        "additionalProperties": false,
+        "description": "PostalAddress"
+      }
+    }
+  }
+}

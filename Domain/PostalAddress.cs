@@ -3,31 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace Domain;
 
-public class PostalAddress
+public partial record PostalAddress(string StreetAddress, string CityName, string StateName, string PostalCodeText,
+	string? AlternateLocationText = default, string? AttentionText = default)
 {
-	public PostalAddress(string streetAddress, string cityName, string stateName, string postalCodeText)
-		: this(streetAddress, cityName, stateName, postalCodeText, default, default)
-	{
-	}
-
-	public PostalAddress(string streetAddress, string cityName, string stateName, string postalCodeText,
-		string? alternateLocationText, string? attentionText)
-	{
-		AttentionText = attentionText;
-		StreetAddress = streetAddress;
-		AlternateLocationText = alternateLocationText;
-		CityName = cityName;
-		StateName = stateName;
-		PostalCodeText = postalCodeText;
-	}
-
-	public string? AttentionText { get; }
-	public string StreetAddress { get; }
-	public string? AlternateLocationText { get; }
-	public string CityName { get; }
-	public string StateName { get; }
-	public string PostalCodeText { get; }
-
 	public static bool TryValidate(PostalAddress address)
 	{
 		Validate(address);
@@ -37,12 +15,12 @@ public class PostalAddress
 
 	public static void Validate(PostalAddress address)
 	{
-		if (address.AttentionText != null && address.AttentionText.Length > 46)
+		if (address.AttentionText is { Length: > 46 })
 		{
 			throw new ValidationException("Address attn text, when provided should be 46 characters or less.");
 		}
 
-		if (address.AlternateLocationText != null && address.AlternateLocationText.Length > 46)
+		if (address.AlternateLocationText is { Length: > 46 })
 		{
 			throw new ValidationException(
 				"Address alternative location text, when provided should be 46 characters or less.");
@@ -58,10 +36,12 @@ public class PostalAddress
 			throw new ValidationException("Address state name text should be 46 characters or less.");
 		}
 
-		if (!Regex.IsMatch(address.PostalCodeText,
-			    "^((?<USZip>\\d{5})|(?<USZipPlusFour>\\d{5}-\\d{4})|(?<Canadian>[ABCEGHJ-NPRSTVXY]\\d[ABCEGHJ-NPRSTV-Z][ -]?\\d[ABCEGHJ-NPRSTV-Z]\\d)|(?<Mexican>\\d{5}))$"))
+		if (!PostalCodeRegex().IsMatch(address.PostalCodeText))
 		{
 			throw new ValidationException("Address postal code text should be valid.");
 		}
 	}
+
+	[GeneratedRegex("^((?<USZip>\\d{5})|(?<USZipPlusFour>\\d{5}-\\d{4})|(?<Canadian>[ABCEGHJ-NPRSTVXY]\\d[ABCEGHJ-NPRSTV-Z][ -]?\\d[ABCEGHJ-NPRSTV-Z]\\d)|(?<Mexican>\\d{5}))$")]
+	private static partial Regex PostalCodeRegex();
 }

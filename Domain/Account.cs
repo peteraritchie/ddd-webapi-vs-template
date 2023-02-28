@@ -1,14 +1,8 @@
 ﻿namespace Domain;
 
-public class Account
+public record Account(AccountHolder AccountHolder, decimal Balance)
 {
-	public Account(decimal balance)
-	{
-		Balance = balance;
-	}
-
-	public decimal Balance { get; private set; } = 0m;
-	public AccountHolder AccountHolder { get; set; }
+	public decimal Balance { get; private set; } = Balance;
 
 	public void Credit(decimal amount)
 	{

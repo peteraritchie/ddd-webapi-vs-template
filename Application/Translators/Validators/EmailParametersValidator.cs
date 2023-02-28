@@ -14,19 +14,19 @@ public static class EmailParametersValidator
 	{
 		if (!recipients.Any())
 		{
-			result = new ValidationResult(
+			_ = new ValidationResult(
 				"At least one recipient is required",
 				new[] { nameof(Email.DirectRecipients) });
 		}
 		if (subject == null)
 		{
-			result = new ValidationResult(
+			_ = new ValidationResult(
 				"A subject is required",
 				new[] { nameof(Email.Subject) });
 		}
 		if (body == null)
 		{
-			result = new ValidationResult(
+			_ = new ValidationResult(
 				"A body is required",
 				new[] { nameof(Email.Body) });
 		}

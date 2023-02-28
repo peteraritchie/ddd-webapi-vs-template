@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using Application.Exceptions;
 using Domain.Exceptions;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -47,11 +48,11 @@ public class CustomExceptionMiddleware
 			var message = exception.Message;
 
 			logger.LogError("Error: {message}", message);
-			await HandleExceptionAsync(httpContext, exception);
+			await ProcessExceptionAsync(httpContext, exception);
 		}
 	}
 
-	private async Task HandleExceptionAsync(HttpContext context, Exception exception)
+	private async Task ProcessExceptionAsync(HttpContext context, Exception exception)
 	{
 		HttpStatusCode statusCode;
 		string detail;
@@ -62,6 +63,16 @@ public class CustomExceptionMiddleware
 				statusCode = HttpStatusCode.NotFound;
 				detail = $"Entity with ID {ex.Id} does not exist.";
 				break;
+			case ValidationException ex:
+				foreach (var error in ex.Errors)
+				{
+					modelState.AddModelError(error.PropertyName, error.ErrorMessage);
+				}
+				await WriteProblemDetails(
+					context,
+					problemDetailsFactory.CreateValidationProblemDetails(context, modelState, StatusCodes.Status400BadRequest));
+				return;
+
 			case ValidationsException ex:
 				foreach (var e in ex.ToDictionary())
 				{
@@ -69,14 +80,13 @@ public class CustomExceptionMiddleware
 				}
 				await WriteProblemDetails(
 					context,
-					problemDetailsFactory.CreateValidationProblemDetails(context, modelState));
+					problemDetailsFactory.CreateValidationProblemDetails(context, modelState, StatusCodes.Status400BadRequest));
 				return;
 			default:
 				statusCode = HttpStatusCode.InternalServerError;
 				detail = exception.Message;
 				break;
 		}
-
 
 		var problemDetails = CreateProblemDetails(context, statusCode, detail);
 
@@ -87,6 +97,7 @@ public class CustomExceptionMiddleware
 	{
 		context.Response.StatusCode = problemDetails.Status!.Value;
 		context.Response.ContentType = problemDetails.GetContentType();
+
 		if(problemDetails is ValidationProblemDetails validationProblemDetails)
 		{
 			await JsonSerializer.SerializeAsync(

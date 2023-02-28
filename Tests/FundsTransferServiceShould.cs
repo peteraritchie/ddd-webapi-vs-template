@@ -15,7 +15,7 @@ public class FundsTransferServiceShould
 		mockRepository = new Mock<IAccountRepository>();
 		mockRepository
 			.Setup(m => m.GetAsync(It.IsAny<Guid>()))
-			.Returns(Task.FromResult(new Account(100m)));
+			.Returns(Task.FromResult(new Account(new AccountHolder(string.Empty, string.Empty, string.Empty), 100m)));
 		fundsTransferService = new FundsTransferService(mockRepository.Object);
 	}
 
@@ -39,7 +39,7 @@ public class FundsTransferServiceShould
 			.Throws<Exception>();
 		mockThrowingRepository
 			.Setup(m => m.GetAsync(It.IsAny<Guid>()))
-			.Returns(Task.FromResult(new Account(100m)));
+			.Returns(Task.FromResult(new Account(new AccountHolder(string.Empty, string.Empty, string.Empty), 100m)));
 		var throwingFundsTransferService = new FundsTransferService(mockThrowingRepository.Object);
 
 		await Assert.ThrowsAsync<Exception>(async ()=>await throwingFundsTransferService.TransferAsync(sourceAccountId, destinationAccountId, 103m));

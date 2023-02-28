@@ -26,7 +26,7 @@ internal class AccountBuilder : IBuilder<Account>
 	public Account Build()
 	{
 		Validate();
-		return new Account(Balance!.Value);
+		return new Account(new AccountHolder(string.Empty, string.Empty, string.Empty), Balance!.Value);
 	}
 
 	public void Validate()

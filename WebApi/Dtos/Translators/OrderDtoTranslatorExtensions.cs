@@ -57,7 +57,7 @@ public static class OrderDtoTranslatorExtensions
 			orderItem.UnitPrice.Value);
 	}
 
-	public static PostalAddress ToDomain(this PostalAddressDto address)
+	public static PostalAddress ToDomain(this PostalAddressDto? address)
 	{
 		ArgumentNullException.ThrowIfNull(address);
 

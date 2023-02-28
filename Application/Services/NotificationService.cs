@@ -4,7 +4,7 @@ namespace Application.Services;
 
 public class NotificationService : INotificationService
 {
-	private IEmailSender emailSender;
+	private readonly IEmailSender emailSender;
 
 	public NotificationService(IEmailSender emailSender)
 	{
