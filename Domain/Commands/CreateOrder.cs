@@ -7,12 +7,22 @@ namespace Domain.Commands
 	{
 		public CreateOrder(Guid correlationId, DateTime dateTime, IEnumerable<OrderLineItem> orderItems,
 			PostalAddress shippingAddress)
-			: this(correlationId, dateTime, orderItems, shippingAddress, null)
+			: this(
+				correlationId,
+				dateTime,
+				orderItems,
+				shippingAddress,
+				null)
 		{
 		}
 
 		public CreateOrder(Guid correlationId, Order order)
-			: this(correlationId, order.DateTime, order.OrderItems, order.ShippingAddress, order.BillingAddress)
+			: this(
+				correlationId,
+				order.DateTime,
+				order.OrderItems,
+				order.ShippingAddress,
+				order.BillingAddress)
 		{
 		}
 
@@ -23,17 +33,23 @@ namespace Domain.Commands
 			var orderItemList = orderItems.ToList();
 			if (dateTime > DateTime.UtcNow.Date)
 			{
-				throw new ArgumentException("Order date/time should not be after today.", nameof(dateTime));
+				throw new ArgumentException(
+					"Order date/time should not be after today.",
+					nameof(dateTime));
 			}
 
 			if (correlationId == Guid.Empty)
 			{
-				throw new ArgumentException("Order ID should not be empty.", nameof(correlationId));
+				throw new ArgumentException(
+					"Order ID should not be empty.",
+					nameof(correlationId));
 			}
 
 			if (!orderItemList.Any())
 			{
-				throw new ArgumentException("Order should include at least one line item.", nameof(orderItems));
+				throw new ArgumentException(
+					"Order should include at least one line item.",
+					nameof(orderItems));
 			}
 
 			if (!PostalAddressParametersValidator.TryValidate(
@@ -42,9 +58,12 @@ namespace Domain.Commands
 				    shippingAddress.StateName,
 				    shippingAddress.PostalCodeText,
 				    shippingAddress.AlternateLocationText,
-				    shippingAddress.AttentionText, out var shippingAddressValidationResult))
+				    shippingAddress.AttentionText,
+				    out var shippingAddressValidationResult))
 			{
-				throw new ArgumentException(shippingAddressValidationResult!.ErrorMessage, shippingAddressValidationResult.MemberNames.First());
+				throw new ArgumentException(
+					shippingAddressValidationResult!.ErrorMessage,
+					shippingAddressValidationResult.MemberNames.First());
 			}
 
 			if (billingAddress != null && !PostalAddressParametersValidator.TryValidate(
@@ -53,9 +72,12 @@ namespace Domain.Commands
 				    billingAddress.StateName,
 				    billingAddress.PostalCodeText,
 				    billingAddress.AlternateLocationText,
-					billingAddress.AttentionText, out var billingAddressValidationResult))
+				    billingAddress.AttentionText,
+				    out var billingAddressValidationResult))
 			{
-				throw new ArgumentException(billingAddressValidationResult!.ErrorMessage, billingAddressValidationResult.MemberNames.First());
+				throw new ArgumentException(
+					billingAddressValidationResult!.ErrorMessage,
+					billingAddressValidationResult.MemberNames.First());
 			}
 
 			CorrelationId = correlationId.ToString();

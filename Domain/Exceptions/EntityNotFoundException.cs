@@ -1,11 +1,12 @@
-﻿namespace Domain.Exceptions;
-
-public class EntityNotFoundException : Exception
+﻿namespace Domain.Exceptions
 {
-	public EntityNotFoundException(Guid id)
+	public class EntityNotFoundException : Exception
 	{
-		Id = id;
-	}
+		public EntityNotFoundException(Guid id)
+		{
+			Id = id;
+		}
 
-	public Guid Id { get; }
+		public Guid Id { get; }
+	}
 }

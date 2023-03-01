@@ -1,19 +1,20 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApi.Common;
-
-/// <summary>
-/// </summary>
-[ExcludeFromCodeCoverage(Justification = "In progress.")]
-public static class ProblemDetailsExtensions
+namespace WebApi.Common
 {
 	/// <summary>
 	/// </summary>
-	/// <param name="_"></param>
-	/// <returns></returns>
-	public static string GetContentType(this ProblemDetails _)
+	[ExcludeFromCodeCoverage(Justification = "In progress.")]
+	public static class ProblemDetailsExtensions
 	{
-		return ModernMediaTypeNames.Application.ProblemJson;
+		/// <summary>
+		/// </summary>
+		/// <param name="_"></param>
+		/// <returns></returns>
+		public static string GetContentType(this ProblemDetails _)
+		{
+			return ModernMediaTypeNames.Application.ProblemJson;
+		}
 	}
 }

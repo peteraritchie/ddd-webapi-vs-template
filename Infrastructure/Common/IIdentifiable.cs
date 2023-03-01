@@ -1,6 +1,7 @@
-﻿namespace Infrastructure.Common;
-
-public interface IIdentifiable
+﻿namespace Infrastructure.Common
 {
-	public string? Id { get; }
+	public interface IIdentifiable
+	{
+		public string? Id { get; }
+	}
 }

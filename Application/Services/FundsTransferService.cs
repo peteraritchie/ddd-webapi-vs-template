@@ -1,38 +1,45 @@
 ﻿using Application.Abstractions;
 using Domain.Abstractions;
 
-namespace Application.Services;
-
-/// <summary>
-/// Example application service from [Evans2004]
-/// </summary>
-internal class FundsTransferService : IFundsTransferService
+namespace Application.Services
 {
-	private readonly IAccountRepository repository;
-
-	public FundsTransferService(IAccountRepository repository)
+	/// <summary>
+	///     Example application service from [Evans2004]
+	/// </summary>
+	internal class FundsTransferService : IFundsTransferService
 	{
-		this.repository = repository;
-	}
+		private readonly IAccountRepository repository;
 
-	public async Task TransferAsync(Guid sourceAccountId, Guid destinationAccountId, decimal amount)
-	{
-		var sourceAccount = await repository.GetAsync(sourceAccountId).ConfigureAwait(false);
-		var destinationAccount = await repository.GetAsync(destinationAccountId).ConfigureAwait(false);
-		sourceAccount.Debit(amount);
-		destinationAccount.Debit(amount);
-		sourceAccount.Credit(amount);
-
-		await repository.UpdateAsync(sourceAccountId, sourceAccount).ConfigureAwait(false);
-		try
+		public FundsTransferService(IAccountRepository repository)
 		{
-			await repository.UpdateAsync(destinationAccountId, destinationAccount).ConfigureAwait(false);
+			this.repository = repository;
 		}
-		catch (Exception)
+
+		public async Task TransferAsync(Guid sourceAccountId, Guid destinationAccountId, decimal amount)
 		{
+			var sourceAccount = await repository.GetAsync(sourceAccountId).ConfigureAwait(false);
+			var destinationAccount = await repository.GetAsync(destinationAccountId).ConfigureAwait(false);
+			sourceAccount.Debit(amount);
+			destinationAccount.Debit(amount);
 			sourceAccount.Credit(amount);
-			await repository.UpdateAsync(sourceAccountId, sourceAccount).ConfigureAwait(false);
-			throw;
+
+			await repository.UpdateAsync(
+				sourceAccountId,
+				sourceAccount).ConfigureAwait(false);
+			try
+			{
+				await repository.UpdateAsync(
+					destinationAccountId,
+					destinationAccount).ConfigureAwait(false);
+			}
+			catch (Exception)
+			{
+				sourceAccount.Credit(amount);
+				await repository.UpdateAsync(
+					sourceAccountId,
+					sourceAccount).ConfigureAwait(false);
+				throw;
+			}
 		}
 	}
 }

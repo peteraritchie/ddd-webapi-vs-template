@@ -1,10 +1,11 @@
-﻿namespace Domain.Abstractions;
-
-public interface IAccountRepository
+﻿namespace Domain.Abstractions
 {
-	public Task CreateAsync(Guid accountId, Account order);
-	public Task DeleteAsync(Guid accountId);
+	public interface IAccountRepository
+	{
+		public Task CreateAsync(Guid accountId, Account order);
+		public Task DeleteAsync(Guid accountId);
 
-	Task<Account> GetAsync(Guid accountId);
-	Task<Account> UpdateAsync(Guid accountId, Account account);
+		Task<Account> GetAsync(Guid accountId);
+		Task<Account> UpdateAsync(Guid accountId, Account account);
+	}
 }

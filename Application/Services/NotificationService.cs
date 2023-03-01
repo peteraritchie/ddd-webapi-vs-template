@@ -1,18 +1,19 @@
 ﻿using Domain.Abstractions;
 
-namespace Application.Services;
-
-public class NotificationService : INotificationService
+namespace Application.Services
 {
-	private readonly IEmailSender emailSender;
-
-	public NotificationService(IEmailSender emailSender)
+	public class NotificationService : INotificationService
 	{
-		this.emailSender = emailSender;
-	}
+		private readonly IEmailSender emailSender;
 
-	public void SendNotification(string address, string message)
-	{
-		throw new NotImplementedException();
+		public NotificationService(IEmailSender emailSender)
+		{
+			this.emailSender = emailSender;
+		}
+
+		public void SendNotification(string address, string message)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

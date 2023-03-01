@@ -1,32 +1,35 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.Exceptions;
-
-public class ValidationsException : Exception
+namespace Application.Exceptions
 {
-	private readonly List<ValidationResult> results;
-
-	public ValidationsException(IEnumerable<ValidationResult> results)
+	public class ValidationsException : Exception
 	{
-		this.results = new List<ValidationResult>(results);
-	}
+		private readonly List<ValidationResult> results;
 
-	public ValidationsException(ValidationResult result)
-	{
-		results = new List<ValidationResult> { result };
-	}
+		public ValidationsException(IEnumerable<ValidationResult> results)
+		{
+			this.results = new List<ValidationResult>(results);
+		}
 
-	public void Add(ValidationResult result)
-	{
-		results.Add(result);
-	}
+		public ValidationsException(ValidationResult result)
+		{
+			results = new List<ValidationResult> { result };
+		}
 
-	public IDictionary<string, string> ToDictionary()
-	{
-		var x = results.SelectMany(
-			r => r.MemberNames.Select(
-				m => new { MemberName = m, ErrorMessage = r.ErrorMessage! }));
+		public void Add(ValidationResult result)
+		{
+			results.Add(result);
+		}
 
-		return x.ToDictionary(e=>e.MemberName, e=>e.ErrorMessage);
+		public IDictionary<string, string> ToDictionary()
+		{
+			var x = results.SelectMany(
+				r => r.MemberNames.Select(
+					m => new { MemberName = m, ErrorMessage = r.ErrorMessage! }));
+
+			return x.ToDictionary(
+				e => e.MemberName,
+				e => e.ErrorMessage);
+		}
 	}
 }

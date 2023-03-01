@@ -1,16 +1,17 @@
-﻿namespace Domain;
-
-public record Account(AccountHolder AccountHolder, decimal Balance)
+﻿namespace Domain
 {
-	public decimal Balance { get; private set; } = Balance;
-
-	public void Credit(decimal amount)
+	public record Account(AccountHolder AccountHolder, decimal Balance)
 	{
-		Balance += amount;
-	}
+		public decimal Balance { get; private set; } = Balance;
 
-	public void Debit(decimal amount)
-	{
-		Balance -= amount;
+		public void Credit(decimal amount)
+		{
+			Balance += amount;
+		}
+
+		public void Debit(decimal amount)
+		{
+			Balance -= amount;
+		}
 	}
 }

@@ -1,54 +1,55 @@
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 using FluentValidation;
 
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Tests")]
+[assembly: InternalsVisibleTo("Tests")]
 
-namespace WebApi.Dtos.Validators;
-
-
-internal class OrderModelValidator : AbstractValidator<OrderDto>
+namespace WebApi.Dtos.Validators
 {
-	public OrderModelValidator()
+	internal class OrderModelValidator : AbstractValidator<OrderDto>
 	{
-		RuleFor(order => order.OrderDate)
-			.NotEmpty();
-		RuleFor(order => order.ShippingAddress)
-			.NotNull();
-		RuleFor(order => order.OrderItems)
-			.NotEmpty();
+		public OrderModelValidator()
+		{
+			RuleFor(order => order.OrderDate)
+				.NotEmpty();
+			RuleFor(order => order.ShippingAddress)
+				.NotNull();
+			RuleFor(order => order.OrderItems)
+				.NotEmpty();
+		}
 	}
-}
 
 
-internal static class OrderDtoValidator
-{
-	public static bool TryValidate(OrderDto order, out ValidationResult? result)
+	internal static class OrderDtoValidator
 	{
-		if (!order.OrderDate.HasValue)
+		public static bool TryValidate(OrderDto order, out ValidationResult? result)
 		{
-			result = new ValidationResult(
-				$"{nameof(order)}.{nameof(order.OrderDate)} is required.",
-				new[] { nameof(order.OrderDate) });
-			return false;
-		}
+			if (!order.OrderDate.HasValue)
+			{
+				result = new ValidationResult(
+					$"{nameof(order)}.{nameof(order.OrderDate)} is required.",
+					new[] { nameof(order.OrderDate) });
+				return false;
+			}
 
-		if (order.ShippingAddress is null)
-		{
-			result = new ValidationResult(
-				"{nameof(order)}.{nameof(order.ShippingAddress)} is required.",
-				new[] { nameof(order.ShippingAddress) });
-			return false;
-		}
+			if (order.ShippingAddress is null)
+			{
+				result = new ValidationResult(
+					"{nameof(order)}.{nameof(order.ShippingAddress)} is required.",
+					new[] { nameof(order.ShippingAddress) });
+				return false;
+			}
 
-		if (order.OrderItems == null)
-		{
-			result = new ValidationResult(
-				$"{nameof(order)}.{nameof(order.OrderItems)} is required.",
-				new[] { nameof(order.OrderItems) });
-			return false;
-		}
+			if (order.OrderItems == null)
+			{
+				result = new ValidationResult(
+					$"{nameof(order)}.{nameof(order.OrderItems)} is required.",
+					new[] { nameof(order.OrderItems) });
+				return false;
+			}
 
-		result = null;
-		return true;
+			result = null;
+			return true;
+		}
 	}
 }

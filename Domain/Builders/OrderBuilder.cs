@@ -1,78 +1,89 @@
-﻿namespace Domain.Builders;
-
-public class OrderBuilder
+﻿namespace Domain.Builders
 {
-	private readonly List<OrderLineItem> lineItems;
-	private PostalAddress? billingAddress;
-	private DateTime? dateTime;
-	private PostalAddress? shippingAddress;
-
-	public OrderBuilder()
+	public class OrderBuilder
 	{
-		lineItems = new List<OrderLineItem>();
-	}
+		private readonly List<OrderLineItem> lineItems;
+		private PostalAddress? billingAddress;
+		private DateTime? dateTime;
+		private PostalAddress? shippingAddress;
 
-	public void Validate()
-	{
-		if (!dateTime.HasValue)
+		public OrderBuilder()
 		{
-			throw new InvalidOperationException();
+			lineItems = new List<OrderLineItem>();
 		}
 
-		if (shippingAddress == null)
+		public void Validate()
 		{
-			throw new InvalidOperationException();
+			if (!dateTime.HasValue)
+			{
+				throw new InvalidOperationException();
+			}
+
+			if (shippingAddress == null)
+			{
+				throw new InvalidOperationException();
+			}
+
+			if (!lineItems.Any())
+			{
+				throw new InvalidOperationException();
+			}
 		}
 
-		if (!lineItems.Any())
+		public OrderBuilder At(DateTime dateTime)
 		{
-			throw new InvalidOperationException();
-		}
-	}
-
-	public OrderBuilder At(DateTime dateTime)
-	{
-		this.dateTime = dateTime;
-		return this;
-	}
-
-	public OrderBuilder ShippingTo(PostalAddress address)
-	{
-		shippingAddress = address;
-		return this;
-	}
-
-	public OrderBuilder BillingTo(PostalAddress address)
-	{
-		billingAddress = address;
-		return this;
-	}
-
-	public OrderBuilder BillToShippingAddress()
-	{
-		billingAddress = shippingAddress;
-		return this;
-	}
-
-	public OrderBuilder WithProduct(string skuText, decimal price, int quantity)
-	{
-		if (quantity is < 1 or > ushort.MaxValue)
-		{
-			throw new ArgumentOutOfRangeException(nameof(quantity), quantity,
-				$"Quantity should be greater than 0 and less than {ushort.MaxValue}");
+			this.dateTime = dateTime;
+			return this;
 		}
 
-		lineItems.Add(new OrderLineItem(skuText, (ushort)quantity, price));
+		public OrderBuilder ShippingTo(PostalAddress address)
+		{
+			shippingAddress = address;
+			return this;
+		}
 
-		return this;
-	}
+		public OrderBuilder BillingTo(PostalAddress address)
+		{
+			billingAddress = address;
+			return this;
+		}
 
-	public Order Build()
-	{
-		Validate();
+		public OrderBuilder BillToShippingAddress()
+		{
+			billingAddress = shippingAddress;
+			return this;
+		}
 
-		var result = new Order(dateTime!.Value, lineItems, shippingAddress!, billingAddress);
+		public OrderBuilder WithProduct(string skuText, decimal price, int quantity)
+		{
+			if (quantity is < 1 or > ushort.MaxValue)
+			{
+				throw new ArgumentOutOfRangeException(
+					nameof(quantity),
+					quantity,
+					$"Quantity should be greater than 0 and less than {ushort.MaxValue}");
+			}
 
-		return result;
+			lineItems.Add(
+				new OrderLineItem(
+					skuText,
+					(ushort)quantity,
+					price));
+
+			return this;
+		}
+
+		public Order Build()
+		{
+			Validate();
+
+			var result = new Order(
+				dateTime!.Value,
+				lineItems,
+				shippingAddress!,
+				billingAddress);
+
+			return result;
+		}
 	}
 }

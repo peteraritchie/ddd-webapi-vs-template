@@ -1,8 +1,9 @@
-﻿namespace Infrastructure.Dtos;
-
-public record OrderItemDto
+﻿namespace Infrastructure.Dtos
 {
-	public string? SkuText { get; set; }
-	public int? Quantity { get; set; }
-	public decimal? Price { get; set; }
+	public record OrderItemDto
+	{
+		public string? SkuText { get; set; }
+		public int? Quantity { get; set; }
+		public decimal? Price { get; set; }
+	}
 }

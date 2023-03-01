@@ -1,29 +1,30 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using WebApi;
 
-namespace Tests.Common;
-
-public abstract class WebApplicationTesterBase : IClassFixture<WebApplicationFactory<Program>>, IDisposable
+namespace Tests.Common
 {
-	protected readonly HttpClient client;
-
-	protected WebApplicationTesterBase(WebApplicationFactory<Program> webApplicationFactory)
+	public abstract class WebApplicationTesterBase : IClassFixture<WebApplicationFactory<Program>>, IDisposable
 	{
-		client = webApplicationFactory.CreateClient();
-	}
+		protected readonly HttpClient client;
+
+		protected WebApplicationTesterBase(WebApplicationFactory<Program> webApplicationFactory)
+		{
+			client = webApplicationFactory.CreateClient();
+		}
 
 #pragma warning disable CA1816 // There are no reason to create finalizers
-	public void Dispose()
+		public void Dispose()
 #pragma warning restore CA1816
-	{
-		Dispose(true);
-	}
-
-	protected virtual void Dispose(bool disposing)
-	{
-		if (disposing)
 		{
-			client.Dispose();
+			Dispose(true);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				client.Dispose();
+			}
 		}
 	}
 }

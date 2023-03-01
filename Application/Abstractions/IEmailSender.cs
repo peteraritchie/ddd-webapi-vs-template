@@ -1,6 +1,7 @@
-﻿namespace Domain.Abstractions;
-
-public interface IEmailSender
+﻿namespace Domain.Abstractions
 {
-	Task SendEmailAsync(string to, string from, string subject, string body);
+	public interface IEmailSender
+	{
+		Task SendEmailAsync(string to, string from, string subject, string body);
+	}
 }

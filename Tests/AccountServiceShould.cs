@@ -3,41 +3,60 @@ using Domain;
 using Domain.Abstractions;
 using Moq;
 
-namespace Tests;
-
-public class AccountServiceShould
+namespace Tests
 {
-	private readonly Mock<IAccountRepository> mockRepository;
-
-	public AccountServiceShould()
+	public class AccountServiceShould
 	{
-		mockRepository = new Mock<IAccountRepository>();
-		mockRepository
-			.Setup(m => m.GetAsync(It.IsAny<Guid>()))
-			.Returns(Task.FromResult(new Account(new AccountHolder(string.Empty, string.Empty, string.Empty), 100m)
-			{
-				AccountHolder = new AccountHolder( FirstName: string.Empty, LastName: string.Empty, Email: string.Empty)
-			}));
-	}
+		private readonly Mock<IAccountRepository> mockRepository;
 
-	[Fact]
-	public void NotifyAccountHolder()
-	{
-		var mockNotificationService = new Mock<INotificationService>();
-		var service = new AccountService(mockRepository.Object, mockNotificationService.Object);
-		service.NotifyAccountHolder(Guid.NewGuid(), "message");
-		mockNotificationService
-			.Verify(
-				m => m.SendNotification(It.Is<string>(c => c == ""), It.Is<string>(c => c == "message")),
-				Times.Once());
-	}
+		public AccountServiceShould()
+		{
+			mockRepository = new Mock<IAccountRepository>();
+			mockRepository
+				.Setup(m => m.GetAsync(It.IsAny<Guid>()))
+				.Returns(
+					Task.FromResult(
+						new Account(
+							new AccountHolder(
+								string.Empty,
+								string.Empty,
+								string.Empty),
+							100m)
+						{
+							AccountHolder = new AccountHolder(
+								FirstName: string.Empty,
+								LastName: string.Empty,
+								Email: string.Empty)
+						}));
+		}
 
-	[Fact]
-	public void GetAccount()
-	{
-		var mockNotificationService = new Mock<INotificationService>();
-		var service = new AccountService(mockRepository.Object, mockNotificationService.Object);
-		var account = service.GetAccount(Guid.NewGuid());
-		Assert.NotNull(account);
+		[Fact]
+		public void NotifyAccountHolder()
+		{
+			var mockNotificationService = new Mock<INotificationService>();
+			var service = new AccountService(
+				mockRepository.Object,
+				mockNotificationService.Object);
+			service.NotifyAccountHolder(
+				Guid.NewGuid(),
+				"message");
+			mockNotificationService
+				.Verify(
+					m => m.SendNotification(
+						It.Is<string>(c => c == ""),
+						It.Is<string>(c => c == "message")),
+					Times.Once());
+		}
+
+		[Fact]
+		public void GetAccount()
+		{
+			var mockNotificationService = new Mock<INotificationService>();
+			var service = new AccountService(
+				mockRepository.Object,
+				mockNotificationService.Object);
+			var account = service.GetAccount(Guid.NewGuid());
+			Assert.NotNull(account);
+		}
 	}
 }

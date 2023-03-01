@@ -1,37 +1,40 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.Translators.Validators;
-
-public static class EmailParametersValidator
+namespace Application.Translators.Validators
 {
-	public static bool TryValidate(
-		IEnumerable<string> recipients,
-		IEnumerable<string> copiedRecipients,
-		IEnumerable<string> blindCopiedRecipients,
-		string? subject,
-		string? body,
-		out ValidationResult? result)
+	public static class EmailParametersValidator
 	{
-		if (!recipients.Any())
+		public static bool TryValidate(
+			IEnumerable<string> recipients,
+			IEnumerable<string> copiedRecipients,
+			IEnumerable<string> blindCopiedRecipients,
+			string? subject,
+			string? body,
+			out ValidationResult? result)
 		{
-			_ = new ValidationResult(
-				"At least one recipient is required",
-				new[] { nameof(Email.DirectRecipients) });
-		}
-		if (subject == null)
-		{
-			_ = new ValidationResult(
-				"A subject is required",
-				new[] { nameof(Email.Subject) });
-		}
-		if (body == null)
-		{
-			_ = new ValidationResult(
-				"A body is required",
-				new[] { nameof(Email.Body) });
-		}
+			if (!recipients.Any())
+			{
+				_ = new ValidationResult(
+					"At least one recipient is required",
+					new[] { nameof(Email.DirectRecipients) });
+			}
 
-		result = null;
-		return true;
+			if (subject == null)
+			{
+				_ = new ValidationResult(
+					"A subject is required",
+					new[] { nameof(Email.Subject) });
+			}
+
+			if (body == null)
+			{
+				_ = new ValidationResult(
+					"A body is required",
+					new[] { nameof(Email.Body) });
+			}
+
+			result = null;
+			return true;
+		}
 	}
 }

@@ -1,6 +1,7 @@
-﻿namespace Domain.Abstractions;
-
-public interface INotificationService
+﻿namespace Domain.Abstractions
 {
-	void SendNotification(string address, string message);
+	public interface INotificationService
+	{
+		void SendNotification(string address, string message);
+	}
 }

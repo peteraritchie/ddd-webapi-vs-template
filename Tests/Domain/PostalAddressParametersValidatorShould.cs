@@ -10,7 +10,13 @@ namespace Tests.Domain
 		{
 			Assert.True(
 				PostalAddressParametersValidator.TryValidate(
-					"streetAddress", "cityName", "stateName", "H0H 0H0", null, null, out _));
+					"streetAddress",
+					"cityName",
+					"stateName",
+					"H0H 0H0",
+					null,
+					null,
+					out _));
 		}
 
 		[Fact]
@@ -18,8 +24,16 @@ namespace Tests.Domain
 		{
 			Assert.False(
 				PostalAddressParametersValidator.TryValidate(
-					"streetAddress", "cityName", "stateName", "postalCode", null, null, out var result));
-			Assert.Contains(nameof(PostalAddress.PostalCodeText), result!.MemberNames);
+					"streetAddress",
+					"cityName",
+					"stateName",
+					"postalCode",
+					null,
+					null,
+					out var result));
+			Assert.Contains(
+				nameof(PostalAddress.PostalCodeText),
+				result!.MemberNames);
 		}
 
 		[Fact]
@@ -27,9 +41,16 @@ namespace Tests.Domain
 		{
 			Assert.False(
 				PostalAddressParametersValidator.TryValidate(
-					"streetAddress", "123456789012345678901234567890123456789012345678",
-					"stateName", "H0H 0H0", null, null, out var result));
-			Assert.Contains(nameof(PostalAddress.CityName), result!.MemberNames);
+					"streetAddress",
+					"123456789012345678901234567890123456789012345678",
+					"stateName",
+					"H0H 0H0",
+					null,
+					null,
+					out var result));
+			Assert.Contains(
+				nameof(PostalAddress.CityName),
+				result!.MemberNames);
 		}
 
 		[Fact]
@@ -37,10 +58,16 @@ namespace Tests.Domain
 		{
 			Assert.False(
 				PostalAddressParametersValidator.TryValidate(
-					"streetAddress", "cityName",
+					"streetAddress",
+					"cityName",
 					"123456789012345678901234567890123456789012345678",
-					"H0H 0H0", null, null, out var result));
-			Assert.Contains(nameof(PostalAddress.StateName), result!.MemberNames);
+					"H0H 0H0",
+					null,
+					null,
+					out var result));
+			Assert.Contains(
+				nameof(PostalAddress.StateName),
+				result!.MemberNames);
 		}
 
 		[Fact]
@@ -48,12 +75,16 @@ namespace Tests.Domain
 		{
 			Assert.False(
 				PostalAddressParametersValidator.TryValidate(
-					"streetAddress", "cityName", "stateName",
+					"streetAddress",
+					"cityName",
+					"stateName",
 					"H0H 0H0",
 					null,
 					"123456789012345678901234567890123456789012345678",
 					out var result));
-			Assert.Contains(nameof(PostalAddress.AttentionText), result!.MemberNames);
+			Assert.Contains(
+				nameof(PostalAddress.AttentionText),
+				result!.MemberNames);
 		}
 
 		[Fact]
@@ -61,12 +92,16 @@ namespace Tests.Domain
 		{
 			Assert.False(
 				PostalAddressParametersValidator.TryValidate(
-					"streetAddress", "cityName", "stateName",
+					"streetAddress",
+					"cityName",
+					"stateName",
 					"H0H 0H0",
 					"123456789012345678901234567890123456789012345678",
 					null,
 					out var result));
-			Assert.Contains(nameof(PostalAddress.AlternateLocationText), result!.MemberNames);
+			Assert.Contains(
+				nameof(PostalAddress.AlternateLocationText),
+				result!.MemberNames);
 		}
 	}
 }

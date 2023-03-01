@@ -1,5 +1,6 @@
-﻿namespace Infrastructure.Exceptions;
-
-public class DatabaseException : Exception
+﻿namespace Infrastructure.Exceptions
 {
+	public class DatabaseException : Exception
+	{
+	}
 }

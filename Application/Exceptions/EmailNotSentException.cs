@@ -1,5 +1,6 @@
-﻿namespace Application.Exceptions;
-
-public class EmailNotSentException : Exception
+﻿namespace Application.Exceptions
 {
+	public class EmailNotSentException : Exception
+	{
+	}
 }

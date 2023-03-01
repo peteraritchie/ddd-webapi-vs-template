@@ -1,36 +1,37 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Infrastructure.Dtos.Validators;
-
-internal static class OrderDtoValidator
+namespace Infrastructure.Dtos.Validators
 {
-	public static bool TryValidate(OrderDto order, out ValidationResult? result)
+	internal static class OrderDtoValidator
 	{
-		if (!order.DateTime.HasValue)
+		public static bool TryValidate(OrderDto order, out ValidationResult? result)
 		{
-			result = new ValidationResult(
-				$"{nameof(order)}.{nameof(order.DateTime)} is required.",
-				new[] { nameof(order.DateTime) });
-			return false;
-		}
+			if (!order.DateTime.HasValue)
+			{
+				result = new ValidationResult(
+					$"{nameof(order)}.{nameof(order.DateTime)} is required.",
+					new[] { nameof(order.DateTime) });
+				return false;
+			}
 
-		if (order.ShippingAddress is null)
-		{
-			result = new ValidationResult(
-				"{nameof(order)}.{nameof(order.ShippingAddress)} is required.",
-				new[] { nameof(order.ShippingAddress) });
-			return false;
-		}
+			if (order.ShippingAddress is null)
+			{
+				result = new ValidationResult(
+					"{nameof(order)}.{nameof(order.ShippingAddress)} is required.",
+					new[] { nameof(order.ShippingAddress) });
+				return false;
+			}
 
-		if (order.OrderItems == null)
-		{
-			result = new ValidationResult(
-				$"{nameof(order)}.{nameof(order.OrderItems)} is required.",
-				new[] { nameof(order.OrderItems) });
-			return false;
-		}
+			if (order.OrderItems == null)
+			{
+				result = new ValidationResult(
+					$"{nameof(order)}.{nameof(order.OrderItems)} is required.",
+					new[] { nameof(order.OrderItems) });
+				return false;
+			}
 
-		result = null;
-		return true;
+			result = null;
+			return true;
+		}
 	}
 }

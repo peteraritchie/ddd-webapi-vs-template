@@ -1,1 +1,3 @@
-﻿[assembly:System.Runtime.CompilerServices.InternalsVisibleTo("Tests")]
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Tests")]

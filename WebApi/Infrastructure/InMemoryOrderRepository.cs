@@ -1,16 +1,17 @@
 using Domain;
 using Domain.Abstractions;
 
-namespace WebApi.Infrastructure;
-
-public sealed class InMemoryOrderRepository : InMemoryRepositoryBase<Order>, IOrderRepository
+namespace WebApi.Infrastructure
 {
-	public InMemoryOrderRepository()
+	public sealed class InMemoryOrderRepository : InMemoryRepositoryBase<Order>, IOrderRepository
 	{
-	}
+		public InMemoryOrderRepository()
+		{
+		}
 
-	public InMemoryOrderRepository(Guid guid, Order order)
-	{
-		entityDictionary[guid] = order;
+		public InMemoryOrderRepository(Guid guid, Order order)
+		{
+			entityDictionary[guid] = order;
+		}
 	}
 }

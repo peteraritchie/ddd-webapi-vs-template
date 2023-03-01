@@ -1,11 +1,12 @@
 ﻿using Domain.Abstractions;
 
-namespace Infrastructure;
-
-public class SmtpEmailSender : IEmailSender
+namespace Infrastructure
 {
-	public Task SendEmailAsync(string to, string from, string subject, string body)
+	public class SmtpEmailSender : IEmailSender
 	{
-		throw new NotImplementedException();
+		public Task SendEmailAsync(string to, string from, string subject, string body)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

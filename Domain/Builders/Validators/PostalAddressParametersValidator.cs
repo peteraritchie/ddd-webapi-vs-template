@@ -12,7 +12,7 @@ namespace Domain.Builders.Validators
 			{
 				result = new ValidationResult(
 					$"{nameof(PostalAddress.AttentionText)}, when provided, must be 46 characters or less.",
-					memberNames: new[] { nameof(PostalAddress.AttentionText) });
+					new[] { nameof(PostalAddress.AttentionText) });
 				return false;
 			}
 
@@ -20,7 +20,7 @@ namespace Domain.Builders.Validators
 			{
 				result = new ValidationResult(
 					$"{nameof(PostalAddress.AlternateLocationText)} must be less than 46 characters.",
-					memberNames: new[] { nameof(PostalAddress.AlternateLocationText) });
+					new[] { nameof(PostalAddress.AlternateLocationText) });
 				return false;
 			}
 
@@ -28,7 +28,7 @@ namespace Domain.Builders.Validators
 			{
 				result = new ValidationResult(
 					$"{nameof(PostalAddress.CityName)} must be less than 46 characters.",
-					memberNames: new[] { nameof(PostalAddress.CityName) });
+					new[] { nameof(PostalAddress.CityName) });
 				return false;
 			}
 
@@ -36,7 +36,7 @@ namespace Domain.Builders.Validators
 			{
 				result = new ValidationResult(
 					$"{nameof(PostalAddress.StateName)} must be less than 46 characters.",
-					memberNames: new[] { nameof(PostalAddress.StateName) });
+					new[] { nameof(PostalAddress.StateName) });
 				return false;
 			}
 
@@ -44,7 +44,7 @@ namespace Domain.Builders.Validators
 			{
 				result = new ValidationResult(
 					$"{nameof(PostalAddress.PostalCodeText)} must be a valid postal code.",
-					memberNames: new[] { nameof(PostalAddress.PostalCodeText) });
+					new[] { nameof(PostalAddress.PostalCodeText) });
 				return false;
 			}
 
@@ -52,7 +52,8 @@ namespace Domain.Builders.Validators
 			return true;
 		}
 
-		[GeneratedRegex("^((?<USZip>\\d{5})|(?<USZipPlusFour>\\d{5}-\\d{4})|(?<Canadian>[ABCEGHJ-NPRSTVXY]\\d[ABCEGHJ-NPRSTV-Z][ -]?\\d[ABCEGHJ-NPRSTV-Z]\\d)|(?<Mexican>\\d{5}))$")]
+		[GeneratedRegex(
+			"^((?<USZip>\\d{5})|(?<USZipPlusFour>\\d{5}-\\d{4})|(?<Canadian>[ABCEGHJ-NPRSTVXY]\\d[ABCEGHJ-NPRSTV-Z][ -]?\\d[ABCEGHJ-NPRSTV-Z]\\d)|(?<Mexican>\\d{5}))$")]
 		private static partial Regex PostalCodeRegex();
 	}
 }

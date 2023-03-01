@@ -1,22 +1,23 @@
-namespace Tests.Common;
-
-public record CSharpProject
+namespace Tests.Common
 {
-	private readonly List<CSharpProject> referencedProjects = new();
-
-	public CSharpProject(FileSystemInfo fileInfo)
+	public record CSharpProject
 	{
-		Name = Path.GetFileNameWithoutExtension(fileInfo.Name);
-		FilePath = fileInfo.FullName;
-	}
+		private readonly List<CSharpProject> referencedProjects = new();
 
-	public string Name { get; set; }
-	public string FilePath { get; set; }
+		public CSharpProject(FileSystemInfo fileInfo)
+		{
+			Name = Path.GetFileNameWithoutExtension(fileInfo.Name);
+			FilePath = fileInfo.FullName;
+		}
 
-	public IEnumerable<CSharpProject> ReferencedProjects => referencedProjects.AsReadOnly();
+		public string Name { get; set; }
+		public string FilePath { get; set; }
 
-	public void AddProjectReference(CSharpProject project)
-	{
-		referencedProjects.Add(project);
+		public IEnumerable<CSharpProject> ReferencedProjects => referencedProjects.AsReadOnly();
+
+		public void AddProjectReference(CSharpProject project)
+		{
+			referencedProjects.Add(project);
+		}
 	}
 }
