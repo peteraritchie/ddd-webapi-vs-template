@@ -35,7 +35,8 @@ public class InMemoryAccountRepositoryShould
 	public async Task DeleteSuccessfully()
 	{
 		await repository.DeleteAsync(defaultGuid);
-		await Assert.ThrowsAsync<EntityNotFoundException>(async () => await repository.GetAsync(defaultGuid));
+		var ex = await Assert.ThrowsAsync<EntityNotFoundException>(async () => await repository.GetAsync(defaultGuid));
+		Assert.Equal(defaultGuid, ex.Id);
 	}
 
 	[Fact]
@@ -51,20 +52,23 @@ public class InMemoryAccountRepositoryShould
 	[Fact]
 	public async Task ThrowCreatingExisting()
 	{
-		await Assert.ThrowsAsync<EntityAlreadyExistsException>(async () => await repository.CreateAsync(defaultGuid, stubAccount));
+		var ex = await Assert.ThrowsAsync<EntityAlreadyExistsException>(async () => await repository.CreateAsync(defaultGuid, stubAccount));
+		Assert.Equal(defaultGuid, ex.Id);
 	}
 
 	[Fact]
 	public async Task ThrowDeletingNonExisting()
 	{
 		await repository.DeleteAsync(defaultGuid);
-		await Assert.ThrowsAsync<EntityNotFoundException>(async () => await repository.DeleteAsync(defaultGuid));
+		var ex =await Assert.ThrowsAsync<EntityNotFoundException>(async () => await repository.DeleteAsync(defaultGuid));
+		Assert.Equal(defaultGuid, ex.Id);
 	}
 
 	[Fact]
 	public async Task ThrowUpdatingNonExisting()
 	{
 		await repository.DeleteAsync(defaultGuid);
-		await Assert.ThrowsAsync<EntityNotFoundException>(async () => await repository.UpdateAsync(defaultGuid, stubAccount));
+		var ex = await Assert.ThrowsAsync<EntityNotFoundException>(async () => await repository.UpdateAsync(defaultGuid, stubAccount));
+		Assert.Equal(defaultGuid, ex.Id);
 	}
 }

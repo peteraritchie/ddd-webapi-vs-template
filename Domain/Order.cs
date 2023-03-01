@@ -22,4 +22,9 @@ public record Order
 	{
 		orderItems.Add(new OrderLineItem(sku, quantity, price));
 	}
+
+	public void AddItem(OrderLineItem item)
+	{
+		orderItems.Add(item with {});
+	}
 }

@@ -29,7 +29,7 @@ public static class TestData
 
 	public static OrderItemDto CreateOrderItem()
 	{
-		return new OrderItemDto()
+		return new OrderItemDto
 		{
 			SkuText = "abc123",
 			UnitQuantity = 2,

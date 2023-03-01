@@ -1,7 +1,6 @@
 ﻿using Domain;
 
-namespace Tests.Domain
-{
+namespace Tests.Domain;
 	public class OrderLineItemShould
 	{
 		[Fact]
@@ -10,4 +9,4 @@ namespace Tests.Domain
 			Assert.Equal(10m, new OrderLineItem(string.Empty, 2, 5m).TotalPrice);
 		}
 	}
-}
+
