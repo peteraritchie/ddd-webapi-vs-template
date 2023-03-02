@@ -1,23 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
-using FluentValidation;
 
 [assembly: InternalsVisibleTo("Tests")]
 
 namespace WebApi.Dtos.Validators;
-
-internal class OrderModelValidator : AbstractValidator<OrderDto>
-{
-	public OrderModelValidator()
-	{
-		RuleFor(order => order.OrderDate)
-			.NotEmpty();
-		RuleFor(order => order.ShippingAddress)
-			.NotNull();
-		RuleFor(order => order.OrderItems)
-			.NotEmpty();
-	}
-}
 
 internal static class OrderDtoValidator
 {
