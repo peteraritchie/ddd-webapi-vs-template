@@ -49,14 +49,13 @@ namespace WebApi.Dtos.Translators
 
 		public static OrderDto FromDomain(this Order order)
 		{
-			var result = new OrderDto
+			return new OrderDto
 			{
 				OrderDate = order.DateTime,
 				OrderItems = order.OrderItems.Select(i => i.FromDomain()),
 				ShippingAddress = order.ShippingAddress.FromDomain(),
 				BillingAddress = order.BillingAddress?.FromDomain()
 			};
-			return result;
 		}
 
 		public static OrderLineItem ToDomain(OrderItemDto item)

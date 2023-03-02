@@ -27,7 +27,6 @@ namespace Tests
 			Assert.NotNull(result);
 		}
 
-
 		[Fact]
 		public async Task ReturnValidationProblemDetailsWhenModelIsNotValid()
 		{
@@ -59,7 +58,7 @@ namespace Tests
 			IConsumer<OrderCreated>? consumer = default;
 			mockBus
 				.Setup(m => m.AddHandler(It.IsAny<IConsumer<OrderCreated>>()))
-				.Callback((IConsumer<OrderCreated> c) => { consumer = c; })
+				.Callback((IConsumer<OrderCreated> c) => consumer = c)
 				.Returns(() => new object());
 
 			mockBus
@@ -79,7 +78,8 @@ namespace Tests
 					});
 			var options =
 				Options.Create(new OrdersController.OrdersControllerOptions());
-			var controller = new OrdersController(
+
+			return new OrdersController(
 				options,
 				mockBus.Object)
 			{
@@ -88,7 +88,6 @@ namespace Tests
 					HttpContext = httpContext
 				}
 			};
-			return controller;
 		}
 	}
 }

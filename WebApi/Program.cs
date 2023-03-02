@@ -36,7 +36,7 @@ namespace WebApi
 			// get a configuration value based upon an injected object example:
 			builder.Services.AddOptions<OrdersController.OrdersControllerOptions>()
 				.Configure<IFeatureFlagService>(
-					(options, service) => { options.FeatureFlag1 = service.GetFlag<bool>("FeatureFlag1"); });
+					(options, service) => options.FeatureFlag1 = service.GetFlag<bool>("FeatureFlag1"));
 			builder.Services.Configure<ApiBehaviorOptions>(
 				_ =>
 				{
@@ -45,7 +45,7 @@ namespace WebApi
 
 			builder.Services.AddControllers()
 				.AddJsonOptions(
-					options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+					options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 			builder.Services.AddEndpointsApiExplorer();

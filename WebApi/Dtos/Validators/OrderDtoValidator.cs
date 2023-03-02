@@ -19,7 +19,6 @@ namespace WebApi.Dtos.Validators
 		}
 	}
 
-
 	internal static class OrderDtoValidator
 	{
 		public static bool TryValidate(OrderDto order, out ValidationResult? result)

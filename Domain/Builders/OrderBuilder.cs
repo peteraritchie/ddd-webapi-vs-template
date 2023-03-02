@@ -77,13 +77,11 @@
 		{
 			Validate();
 
-			var result = new Order(
+			return new Order(
 				dateTime!.Value,
 				lineItems,
 				shippingAddress!,
 				billingAddress);
-
-			return result;
 		}
 	}
 }

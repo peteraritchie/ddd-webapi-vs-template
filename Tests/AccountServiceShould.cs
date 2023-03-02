@@ -24,8 +24,8 @@ namespace Tests
 							100m)
 						{
 							AccountHolder = new AccountHolder(
-								FirstName: string.Empty,
 								LastName: string.Empty,
+								FirstName: string.Empty,
 								Email: string.Empty)
 						}));
 		}

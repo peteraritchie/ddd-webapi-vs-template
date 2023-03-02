@@ -138,12 +138,11 @@ namespace WebApi.Infrastructure
 		private ProblemDetails CreateProblemDetails(HttpContext context, HttpStatusCode statusCode, string detail)
 		{
 			using var m = new HttpResponseMessage(statusCode);
-			var problemDetails = problemDetailsFactory.CreateProblemDetails(
+			return problemDetailsFactory.CreateProblemDetails(
 				context,
+				statusCode: (int)statusCode,
 				title: m.ReasonPhrase,
-				detail: detail,
-				statusCode: (int)statusCode);
-			return problemDetails;
+				detail: detail);
 		}
 	}
 }

@@ -12,7 +12,6 @@ namespace Tests
 		private readonly List<CSharpProject> projects = new();
 		private readonly string[] testProjectNames = { "Tests" };
 
-
 		public SolutionStructureShould()
 		{
 			var queue = new Queue<FileInfo>(new[] { new FileInfo(@"..\..\..\Tests.csproj") });
@@ -21,7 +20,7 @@ namespace Tests
 			{
 				var fileInfo = queue.Dequeue();
 				Debug.Assert(fileInfo.Exists);
-				var project = projects.FirstOrDefault(p => p.FilePath == fileInfo.FullName);
+				var project = projects.Find(p => p.FilePath == fileInfo.FullName);
 				if (project == null)
 				{
 					project = new CSharpProject(fileInfo);
@@ -29,7 +28,7 @@ namespace Tests
 				}
 
 				var rootElement = ProjectRootElement.Open(fileInfo.FullName);
-				Debug.Assert(null != rootElement);
+				Debug.Assert(rootElement is { });
 				var projectReferenceElements = rootElement.ItemGroups
 					.SelectMany(g => g.Items)
 					.Where(i => i.ElementName == "ProjectReference");
@@ -41,7 +40,7 @@ namespace Tests
 							fileInfo.DirectoryName!,
 							e.Include));
 
-					var referencedProject = projects.FirstOrDefault(p => p.FilePath == referencedFileInfo.FullName);
+					var referencedProject = projects.Find(p => p.FilePath == referencedFileInfo.FullName);
 					if (referencedProject == null)
 					{
 						referencedProject = new CSharpProject(referencedFileInfo);
