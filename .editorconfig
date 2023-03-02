@@ -15,6 +15,7 @@ indent_style = tab
 # duplicate diagnostics suppressed:
 dotnet_diagnostic.RCS1163.severity = none # covered by IDE0060
 dotnet_diagnostic.RCS1212.severity = none # covered by IDE0059
+dotnet_diagnostic.CA1812.severity = warning
 
 # noisy diagnostics suppressed
 dotnet_diagnostic.RCS1256.severity = none
@@ -24,6 +25,9 @@ dotnet_diagnostic.RCS1194.severity = suggestion
 
 # diagnostics elevated to information:
 dotnet_diagnostic.RCS1124.severity = suggestion
+
+# diagnostics elevated to warning:
+dotnet_diagnostic.RCS1036.severity = warning # uncessary blank lines
 
 #### Core EditorConfig Options ####
 

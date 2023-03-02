@@ -1,7 +1,6 @@
-﻿namespace Application.Abstractions
+﻿namespace Application.Abstractions;
+
+public interface IFundsTransferService
 {
-	public interface IFundsTransferService
-	{
-		Task TransferAsync(Guid sourceAccountId, Guid destinationAccountId, decimal amount);
-	}
+	Task TransferAsync(Guid sourceAccountId, Guid destinationAccountId, decimal amount);
 }

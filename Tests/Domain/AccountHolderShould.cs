@@ -1,67 +1,66 @@
 ﻿using Domain;
 
-namespace Tests.Domain
+namespace Tests.Domain;
+
+public class AccountHolderShould
 {
-	public class AccountHolderShould
+	[Fact]
+	public void InitializeCorrectly()
 	{
-		[Fact]
-		public void InitializeCorrectly()
-		{
-			var accountHolder = new AccountHolder(
-				"last",
+		var accountHolder = new AccountHolder(
+			"last",
+			"first",
+			"email");
+		Assert.Equal(
+			"first",
+			accountHolder.FirstName);
+		Assert.Equal(
+			"last",
+			accountHolder.LastName);
+	}
+
+	[Fact]
+	public void ThrowWithMissingLastName()
+	{
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+		var ex = Assert.Throws<ArgumentNullException>(
+			() => new AccountHolder(
+				default,
 				"first",
-				"email");
-			Assert.Equal(
-				"first",
-				accountHolder.FirstName);
-			Assert.Equal(
+				"email"));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+		Assert.Equal(
+			nameof(AccountHolder.LastName),
+			ex.ParamName);
+	}
+
+	[Fact]
+	public void ThrowWithMissingFirstName()
+	{
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+		var ex = Assert.Throws<ArgumentNullException>(
+			() => new AccountHolder(
 				"last",
-				accountHolder.LastName);
-		}
-
-		[Fact]
-		public void ThrowWithMissingLastName()
-		{
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-			var ex = Assert.Throws<ArgumentNullException>(
-				() => new AccountHolder(
-					default,
-					"first",
-					"email"));
+				default,
+				"email"));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-			Assert.Equal(
-				nameof(AccountHolder.LastName),
-				ex.ParamName);
-		}
+		Assert.Equal(
+			nameof(AccountHolder.FirstName),
+			ex.ParamName);
+	}
 
-		[Fact]
-		public void ThrowWithMissingFirstName()
-		{
+	[Fact]
+	public void ThrowWithMissingEmail()
+	{
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-			var ex = Assert.Throws<ArgumentNullException>(
-				() => new AccountHolder(
-					"last",
-					default,
-					"email"));
+		var ex = Assert.Throws<ArgumentNullException>(
+			() => new AccountHolder(
+				"last",
+				"email",
+				default));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-			Assert.Equal(
-				nameof(AccountHolder.FirstName),
-				ex.ParamName);
-		}
-
-		[Fact]
-		public void ThrowWithMissingEmail()
-		{
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-			var ex = Assert.Throws<ArgumentNullException>(
-				() => new AccountHolder(
-					"last",
-					"email",
-					default));
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-			Assert.Equal(
-				nameof(AccountHolder.Email),
-				ex.ParamName);
-		}
+		Assert.Equal(
+			nameof(AccountHolder.Email),
+			ex.ParamName);
 	}
 }

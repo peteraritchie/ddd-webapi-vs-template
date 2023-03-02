@@ -1,53 +1,52 @@
 using Domain.Exceptions;
 
-namespace WebApi.Infrastructure
+namespace WebApi.Infrastructure;
+
+public class InMemoryRepositoryBase<TEntity>
 {
-	public class InMemoryRepositoryBase<TEntity>
+	protected readonly Dictionary<Guid, TEntity> entityDictionary = new();
+
+	public Task CreateAsync(Guid entityId, TEntity entity)
 	{
-		protected readonly Dictionary<Guid, TEntity> entityDictionary = new();
-
-		public Task CreateAsync(Guid entityId, TEntity entity)
+		if (entityDictionary.ContainsKey(entityId))
 		{
-			if (entityDictionary.ContainsKey(entityId))
-			{
-				throw new EntityAlreadyExistsException(entityId);
-			}
-
-			entityDictionary[entityId] = entity;
-			return Task.CompletedTask;
+			throw new EntityAlreadyExistsException(entityId);
 		}
 
-		public Task DeleteAsync(Guid entityId)
-		{
-			if (!entityDictionary.ContainsKey(entityId))
-			{
-				throw new EntityNotFoundException(entityId);
-			}
+		entityDictionary[entityId] = entity;
+		return Task.CompletedTask;
+	}
 
-			entityDictionary.Remove(entityId);
-			return Task.CompletedTask;
+	public Task DeleteAsync(Guid entityId)
+	{
+		if (!entityDictionary.ContainsKey(entityId))
+		{
+			throw new EntityNotFoundException(entityId);
 		}
 
-		public Task<TEntity> UpdateAsync(Guid entityId, TEntity entity)
-		{
-			if (!entityDictionary.ContainsKey(entityId))
-			{
-				throw new EntityNotFoundException(entityId);
-			}
+		entityDictionary.Remove(entityId);
+		return Task.CompletedTask;
+	}
 
-			entityDictionary[entityId] = entity;
-			// TODO: merge entities?
-			return Task.FromResult(entity);
+	public Task<TEntity> UpdateAsync(Guid entityId, TEntity entity)
+	{
+		if (!entityDictionary.ContainsKey(entityId))
+		{
+			throw new EntityNotFoundException(entityId);
 		}
 
-		public Task<TEntity> GetAsync(Guid entityId)
-		{
-			if (!entityDictionary.ContainsKey(entityId))
-			{
-				throw new EntityNotFoundException(entityId);
-			}
+		entityDictionary[entityId] = entity;
+		// TODO: merge entities?
+		return Task.FromResult(entity);
+	}
 
-			return Task.FromResult(entityDictionary[entityId]);
+	public Task<TEntity> GetAsync(Guid entityId)
+	{
+		if (!entityDictionary.ContainsKey(entityId))
+		{
+			throw new EntityNotFoundException(entityId);
 		}
+
+		return Task.FromResult(entityDictionary[entityId]);
 	}
 }

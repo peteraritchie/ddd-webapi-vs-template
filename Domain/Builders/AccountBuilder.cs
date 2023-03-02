@@ -2,56 +2,55 @@
 using Domain.Builders.Validators;
 using Domain.Common;
 
-namespace Domain.Builders
+namespace Domain.Builders;
+
+internal class AccountBuilder : IBuilder<Account>
 {
-	internal class AccountBuilder : IBuilder<Account>
+	public string? FirstName { get; private set; }
+	public string? LastName { get; private set; }
+	public decimal? Balance { get; private set; }
+
+	public Account Build()
 	{
-		public string? FirstName { get; private set; }
-		public string? LastName { get; private set; }
-		public decimal? Balance { get; private set; }
+		Validate();
+		return new Account(
+			new AccountHolder(
+				string.Empty,
+				string.Empty,
+				string.Empty),
+			Balance!.Value);
+	}
 
-		public Account Build()
+	public void Validate()
+	{
+		if (!TryValidate(out var result))
 		{
-			Validate();
-			return new Account(
-				new AccountHolder(
-					string.Empty,
-					string.Empty,
-					string.Empty),
-				Balance!.Value);
+			throw new ValidationException(
+				result!,
+				default,
+				default);
 		}
+	}
 
-		public void Validate()
-		{
-			if (!TryValidate(out var result))
-			{
-				throw new ValidationException(
-					result!,
-					default,
-					default);
-			}
-		}
+	public bool TryValidate(out ValidationResult? result)
+	{
+		return AccountParametersValidator.TryValidate(
+			Balance,
+			FirstName,
+			LastName,
+			out result);
+	}
 
-		public bool TryValidate(out ValidationResult? result)
-		{
-			return AccountParametersValidator.TryValidate(
-				Balance,
-				FirstName,
-				LastName,
-				out result);
-		}
+	public AccountBuilder For(string firstName, string lastName)
+	{
+		FirstName = firstName;
+		LastName = lastName;
+		return this;
+	}
 
-		public AccountBuilder For(string firstName, string lastName)
-		{
-			FirstName = firstName;
-			LastName = lastName;
-			return this;
-		}
-
-		public AccountBuilder WithBalance(decimal balance)
-		{
-			Balance = balance;
-			return this;
-		}
+	public AccountBuilder WithBalance(decimal balance)
+	{
+		Balance = balance;
+		return this;
 	}
 }

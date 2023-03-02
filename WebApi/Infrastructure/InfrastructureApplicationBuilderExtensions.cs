@@ -1,10 +1,9 @@
-namespace WebApi.Infrastructure
+namespace WebApi.Infrastructure;
+
+public static class InfrastructureApplicationBuilderExtensions
 {
-	public static class InfrastructureApplicationBuilderExtensions
+	public static IApplicationBuilder UseCustomExceptionMiddleware(this IApplicationBuilder app)
 	{
-		public static IApplicationBuilder UseCustomExceptionMiddleware(this IApplicationBuilder app)
-		{
-			return app.UseMiddleware<CustomExceptionMiddleware>();
-		}
+		return app.UseMiddleware<CustomExceptionMiddleware>();
 	}
 }

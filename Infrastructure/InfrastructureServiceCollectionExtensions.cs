@@ -1,21 +1,20 @@
 using Domain.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Infrastructure
+namespace Infrastructure;
+
+public static class InfrastructureServiceCollectionExtensions
 {
-	public static class InfrastructureServiceCollectionExtensions
+	public static IServiceCollection ConfigureInfrastructureServices(this IServiceCollection services)
 	{
-		public static IServiceCollection ConfigureInfrastructureServices(this IServiceCollection services)
-		{
-			services.AddSingleton<IEmailSender, SmtpEmailSender>();
-			return services;
-		}
+		services.AddSingleton<IEmailSender, SmtpEmailSender>();
+		return services;
+	}
 
-		public static IServiceCollection AddDbContext(this IServiceCollection services, string connectionString)
-		{
-			// TODO:
+	public static IServiceCollection AddDbContext(this IServiceCollection services, string connectionString)
+	{
+		// TODO:
 
-			return services;
-		}
+		return services;
 	}
 }

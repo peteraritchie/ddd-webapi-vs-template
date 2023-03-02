@@ -1,12 +1,11 @@
-﻿namespace Domain.Exceptions
-{
-	public class EntityAlreadyExistsException : Exception
-	{
-		public EntityAlreadyExistsException(Guid id)
-		{
-			Id = id;
-		}
+﻿namespace Domain.Exceptions;
 
-		public Guid Id { get; }
+public class EntityAlreadyExistsException : Exception
+{
+	public EntityAlreadyExistsException(Guid id)
+	{
+		Id = id;
 	}
+
+	public Guid Id { get; }
 }

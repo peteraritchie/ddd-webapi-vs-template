@@ -4,35 +4,34 @@ using Domain.Events;
 using PRI.Messaging.Patterns.Extensions.Bus;
 using PRI.Messaging.Primitives;
 
-namespace Application
+namespace Application;
+
+public class AddOrderItemHandler : IConsumer<AddOrderItem>
 {
-	public class AddOrderItemHandler : IConsumer<AddOrderItem>
+	private readonly IBus bus;
+	private readonly IOrderRepository orderRepository;
+
+	public AddOrderItemHandler(IBus bus, IOrderRepository orderRepository)
 	{
-		private readonly IBus bus;
-		private readonly IOrderRepository orderRepository;
+		this.bus = bus;
+		this.orderRepository = orderRepository;
+	}
 
-		public AddOrderItemHandler(IBus bus, IOrderRepository orderRepository)
-		{
-			this.bus = bus;
-			this.orderRepository = orderRepository;
-		}
+	public void Handle(AddOrderItem command)
+	{
+		var order = orderRepository.GetAsync(command.OrderId).Result;
 
-		public void Handle(AddOrderItem command)
-		{
-			var order = orderRepository.GetAsync(command.OrderId).Result;
+		order.AddItem(
+			command.SkuText,
+			command.UnitQuantity,
+			command.UnitPrice);
 
-			order.AddItem(
-				command.SkuText,
-				command.UnitQuantity,
-				command.UnitPrice);
-
-			_ = orderRepository.UpdateAsync(
-				command.OrderId,
-				order).Result;
-			bus.Publish(
-				new OrderItemAdded(
-					command.CorrelationId,
-					order));
-		}
+		_ = orderRepository.UpdateAsync(
+			command.OrderId,
+			order).Result;
+		bus.Publish(
+			new OrderItemAdded(
+				command.CorrelationId,
+				order));
 	}
 }

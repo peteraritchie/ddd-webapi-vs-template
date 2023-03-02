@@ -1,9 +1,8 @@
-namespace WebApi.Common
+namespace WebApi.Common;
+
+public enum AsyncRequestStatus
 {
-	public enum AsyncRequestStatus
-	{
-		Pending,
-		Started,
-		Completed
-	}
+	Pending,
+	Started,
+	Completed
 }

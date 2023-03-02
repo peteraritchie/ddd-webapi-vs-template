@@ -1,14 +1,13 @@
-namespace WebApi.Infrastructure
+namespace WebApi.Infrastructure;
+
+/// <summary>
+/// </summary>
+public interface IFeatureFlagService
 {
 	/// <summary>
 	/// </summary>
-	public interface IFeatureFlagService
-	{
-		/// <summary>
-		/// </summary>
-		/// <param name="flagName"></param>
-		/// <typeparam name="TResult"></typeparam>
-		/// <returns></returns>
-		TResult GetFlag<TResult>(string flagName) where TResult : struct;
-	}
+	/// <param name="flagName"></param>
+	/// <typeparam name="TResult"></typeparam>
+	/// <returns></returns>
+	TResult GetFlag<TResult>(string flagName) where TResult : struct;
 }

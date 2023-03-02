@@ -10,72 +10,72 @@ using Swashbuckle.AspNetCore.Filters;
 using WebApi.Controllers;
 using WebApi.Infrastructure;
 
-namespace WebApi
+namespace WebApi;
+
+/// <summary>
+/// </summary>
+/// <remarks>This is not static to support WebApplicationFactory&lt;T&gt; in tests</remarks>
+public class Program
 {
 	/// <summary>
+	///     Entry-point
 	/// </summary>
-	/// <remarks>This is not static to support WebApplicationFactory&lt;T&gt; in tests</remarks>
-	public class Program
+	/// <param name="args">command-line args</param>
+	[ExcludeFromCodeCoverage(Justification = "ROI low.")]
+	public static void Main(string[] args)
 	{
-		/// <summary>
-		///     Entry-point
-		/// </summary>
-		/// <param name="args">command-line args</param>
-		[ExcludeFromCodeCoverage(Justification = "ROI low.")]
-		public static void Main(string[] args)
-		{
-			// logging: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-7.0
-			var builder = WebApplication.CreateBuilder(args);
+		// logging: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-7.0
+		var builder = WebApplication.CreateBuilder(args);
 
-			// Add services to the container.
-			builder.Services.AddSingleton<IFeatureFlagService, LaunchDarklyClient>();
-			builder.Services.ConfigureServices();
-			builder.Services.ConfigureInfrastructureServices();
-			builder.Services.ConfigureApplicationServices();
+		// Add services to the container.
+		builder.Services.AddSingleton<IFeatureFlagService, LaunchDarklyClient>();
+		builder.Services.ConfigureServices();
+		builder.Services.ConfigureInfrastructureServices();
+		builder.Services.ConfigureApplicationServices();
 
-			// get a configuration value based upon an injected object example:
-			builder.Services.AddOptions<OrdersController.OrdersControllerOptions>()
-				.Configure<IFeatureFlagService>(
-					(options, service) => options.FeatureFlag1 = service.GetFlag<bool>("FeatureFlag1"));
-			builder.Services.Configure<ApiBehaviorOptions>(
-				_ =>
-				{
-					//_.SuppressModelStateInvalidFilter = true;
-				});
-
-			builder.Services.AddControllers()
-				.AddJsonOptions(
-					options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-
-			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-			builder.Services.AddEndpointsApiExplorer();
-			builder.Services.AddSwaggerGen(
-				c =>
-				{
-					c.CustomSchemaIds(
-						x =>
-							x.GetCustomAttributes<DisplayNameAttribute>().SingleOrDefault()?.DisplayName ?? x.Name);
-					var assemblyName = typeof(Program).Assembly.GetName().Name;
-					var filePath = Path.Combine(
-						AppContext.BaseDirectory,
-						$"{assemblyName}.xml");
-					c.IncludeXmlComments(filePath);
-				});
-			builder.Services.AddSwaggerExamplesFromAssemblies(typeof(OrdersController).Assembly);
-
-			var app = builder.Build();
-
-			var logger = app.Logger;
-
-			// Configure the HTTP request pipeline.
-			if (app.Environment.IsDevelopment())
+		// get a configuration value based upon an injected object example:
+		builder.Services.AddOptions<OrdersController.OrdersControllerOptions>()
+			.Configure<IFeatureFlagService>(
+				(options, service) => options.FeatureFlag1 = service.GetFlag<bool>("FeatureFlag1"));
+		builder.Services.Configure<ApiBehaviorOptions>(
+			_ =>
 			{
-				// Configuration Point:
-			}
+				//_.SuppressModelStateInvalidFilter = true;
+			});
 
-			app.UseSwagger();
+		builder.Services.AddControllers()
+			.AddJsonOptions(
+				options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+		// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+		builder.Services.AddEndpointsApiExplorer();
+		builder.Services.AddSwaggerGen(
+			c =>
+			{
+				c.CustomSchemaIds(
+					x =>
+						x.GetCustomAttributes<DisplayNameAttribute>().SingleOrDefault()?.DisplayName ?? x.Name);
+				var assemblyName = typeof(Program).Assembly.GetName().Name;
+				var filePath = Path.Combine(
+					AppContext.BaseDirectory,
+					$"{assemblyName}.xml");
+				c.IncludeXmlComments(filePath);
+			});
+		builder.Services.AddSwaggerExamplesFromAssemblies(typeof(OrdersController).Assembly);
+
+		var app = builder.Build();
+
+		var logger = app.Logger;
+
+		// Configure the HTTP request pipeline.
+		if (app.Environment.IsDevelopment())
+		{
+			// Configuration Point:
+		}
+
+		app.UseSwagger();
 #if true
-			app.UseSwaggerUI();
+		app.UseSwaggerUI();
 #else
         app.UseStaticFiles();
 		app.UseSwaggerUI(options =>
@@ -85,69 +85,69 @@ namespace WebApi
 		});
 #endif
 
-			app.UseHttpsRedirection();
+		app.UseHttpsRedirection();
 
-			app.UseCustomExceptionMiddleware();
+		app.UseCustomExceptionMiddleware();
 
-			app.UseAuthorization();
+		app.UseAuthorization();
 
-			app.Use(Middleware);
+		app.Use(Middleware);
 
-			logger.LogInformation("Mapping controllers");
-			app.MapControllers();
+		logger.LogInformation("Mapping controllers");
+		app.MapControllers();
 
-			logger.LogInformation("Starting the app");
-			app.Run();
+		logger.LogInformation("Starting the app");
+		app.Run();
+	}
+
+	[ExcludeFromCodeCoverage]
+	private static async Task Middleware(HttpContext context, RequestDelegate next)
+	{
+		Console.WriteLine($"{context.Request.Method} {context.Request.Path}");
+		foreach (var h in context.Request.Headers)
+		{
+			Console.WriteLine($"{h.Key}: {h.Value}");
 		}
 
-		[ExcludeFromCodeCoverage]
-		private static async Task Middleware(HttpContext context, RequestDelegate next)
+		switch (context.Request.Method)
 		{
-			Console.WriteLine($"{context.Request.Method} {context.Request.Path}");
-			foreach (var h in context.Request.Headers)
+			case "GET":
+			case "HEAD":
+			default:
 			{
-				Console.WriteLine($"{h.Key}: {h.Value}");
-			}
-
-			switch (context.Request.Method)
-			{
-				case "GET":
-				case "HEAD":
-				default:
+				if (MediaTypeHeaderValue.TryParse(
+					    context.Request.ContentType,
+					    out var type))
 				{
-					if (MediaTypeHeaderValue.TryParse(
-						    context.Request.ContentType,
-						    out var type))
+					var version = "unknown";
+
+					var parameters = string.Join(
+						", ",
+						type.Parameters.Select(p => $"{p.Name}: {p.Value}").ToArray());
+					if (type.Parameters.Any(e => e.Name == "v"))
 					{
-						var version = "unknown";
-
-						var parameters = string.Join(
-							", ",
-							type.Parameters.Select(p => $"{p.Name}: {p.Value}").ToArray());
-						if (type.Parameters.Any(e => e.Name == "v"))
-						{
-							version = type.Parameters.Single(e => e.Name == "v").Value.Value ?? "unknown";
-						}
-						else if (type.Parameters.Any(e => e.Name == "ver"))
-						{
-							version = type.Parameters.Single(e => e.Name == "ver").Value.Value ?? "unknown";
-						}
-						else if (type.Parameters.Any(e => e.Name == "version"))
-						{
-							version = type.Parameters.Single(e => e.Name == "version").Value.Value ?? "unknown";
-						}
-
-						Console.WriteLine(
-							$"Type: {type.Type}, SubType: {type.SubTypeWithoutSuffix}, Suffix: {type.Suffix}, Charset: {type.Charset}, Version: {version}");
+						version = type.Parameters.Single(e => e.Name == "v").Value.Value ?? "unknown";
+					}
+					else if (type.Parameters.Any(e => e.Name == "ver"))
+					{
+						version = type.Parameters.Single(e => e.Name == "ver").Value.Value ?? "unknown";
+					}
+					else if (type.Parameters.Any(e => e.Name == "version"))
+					{
+						version = type.Parameters.Single(e => e.Name == "version").Value.Value ?? "unknown";
 					}
 
-					Console.WriteLine($"1. Endpoint: {context.GetEndpoint()?.DisplayName ?? "(null)"}");
-					await next(context);
-					break;
+					Console.WriteLine(
+						$"Type: {type.Type}, SubType: {type.SubTypeWithoutSuffix}, Suffix: {type.Suffix}, Charset: {type.Charset}, Version: {version}");
 				}
+
+				Console.WriteLine($"1. Endpoint: {context.GetEndpoint()?.DisplayName ?? "(null)"}");
+				await next(context);
+				break;
 			}
 		}
 	}
+}
 
 #if NOT_WORKING
 using System.ComponentModel;
@@ -337,4 +337,3 @@ public class VersionedContentTypeTransformer : DynamicRouteValueTransformer
     }
 }
 #endif
-}

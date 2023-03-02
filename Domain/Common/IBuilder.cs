@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Domain.Common
+namespace Domain.Common;
+
+public interface IBuilder<out TResult>
 {
-	public interface IBuilder<out TResult>
-	{
-		TResult Build();
-		void Validate();
-		bool TryValidate(out ValidationResult? result);
-	}
+	TResult Build();
+	void Validate();
+	bool TryValidate(out ValidationResult? result);
 }

@@ -7,52 +7,51 @@ using WebApi;
 using WebApi.Controllers;
 using WebApi.Dtos;
 
-namespace Tests
+namespace Tests;
+
+public class FundsControllerShould
 {
-	public class FundsControllerShould
+	private readonly FundsController fundsController;
+
+	public FundsControllerShould()
 	{
-		private readonly FundsController fundsController;
+		fundsController = CreateFundsController();
+	}
 
-		public FundsControllerShould()
+	private static FundsController CreateFundsController()
+	{
+		var httpContext = new DefaultHttpContext();
+		httpContext.Request.Headers["Correlation-ID"] = Guid.NewGuid().ToString();
+		var services = new ServiceCollection()
+			.ConfigureServices()
+			.ConfigureInfrastructureServices()
+			.ConfigureApplicationServices()
+			.AddSingleton(httpContext)
+			.AddSingleton<FundsController>();
+
+		using var serviceProvider = services.BuildServiceProvider();
+		using var scope = serviceProvider.CreateScope();
+
+		return scope.ServiceProvider.GetRequiredService<FundsController>();
+	}
+
+	[Fact]
+	public void Smoke()
+	{
+		Assert.NotNull(fundsController);
+	}
+
+	[Fact]
+	public void ReturnNoContentOnCreate()
+	{
+		var fundsTransferRequestDto = new FundsTransferRequestDto
 		{
-			fundsController = CreateFundsController();
-		}
+			Amount = 100m,
+			DestinationAccountId = Guid.NewGuid(),
+			SourceAccountId = Guid.NewGuid()
+		};
 
-		private static FundsController CreateFundsController()
-		{
-			var httpContext = new DefaultHttpContext();
-			httpContext.Request.Headers["Correlation-ID"] = Guid.NewGuid().ToString();
-			var services = new ServiceCollection()
-				.ConfigureServices()
-				.ConfigureInfrastructureServices()
-				.ConfigureApplicationServices()
-				.AddSingleton(httpContext)
-				.AddSingleton<FundsController>();
-
-			using var serviceProvider = services.BuildServiceProvider();
-			using var scope = serviceProvider.CreateScope();
-
-			return scope.ServiceProvider.GetRequiredService<FundsController>();
-		}
-
-		[Fact]
-		public void Smoke()
-		{
-			Assert.NotNull(fundsController);
-		}
-
-		[Fact]
-		public void ReturnNoContentOnCreate()
-		{
-			var fundsTransferRequestDto = new FundsTransferRequestDto
-			{
-				Amount = 100m,
-				DestinationAccountId = Guid.NewGuid(),
-				SourceAccountId = Guid.NewGuid()
-			};
-
-			var result = fundsController.CreateFundTransferRequest(fundsTransferRequestDto);
-			_ = Assert.IsType<NoContentResult>(result);
-		}
+		var result = fundsController.CreateFundTransferRequest(fundsTransferRequestDto);
+		_ = Assert.IsType<NoContentResult>(result);
 	}
 }

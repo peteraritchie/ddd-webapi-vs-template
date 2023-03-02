@@ -137,8 +137,23 @@ Test names detail the expectation, no need for assert text.
 
 Tests verify controllers via test server.
 
-[Vernon]: https://localhost
-[Dahan]: https://localhost
+[Vernon]: https://todo
+[Dahan]: https://todo
 <!--
 John: places for EDA to fit... 
+-->
+<!--
+Evans' services:
+- routing service
+- NetworkTraversalService
+- NetListImportService
+- QueryService
+
+Vernon's Services:
+- DiscussionService (domain)
+- SchedulingService (domain)
+- TenantIdentityService (application)
+- tenantProvisioningService
+- CustomerApplicationService (application)
+- pricingService (domain)
 -->

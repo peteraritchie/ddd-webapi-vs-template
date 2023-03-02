@@ -1,16 +1,15 @@
-namespace WebApi.Common
+namespace WebApi.Common;
+
+/// <summary>
+/// </summary>
+public static class ModernMediaTypeNames
 {
 	/// <summary>
 	/// </summary>
-	public static class ModernMediaTypeNames
+	public static class Application
 	{
 		/// <summary>
 		/// </summary>
-		public static class Application
-		{
-			/// <summary>
-			/// </summary>
-			public const string ProblemJson = "application/problem+json; charset=utf-8";
-		}
+		public const string ProblemJson = "application/problem+json; charset=utf-8";
 	}
 }
