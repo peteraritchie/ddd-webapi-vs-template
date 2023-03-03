@@ -1,4 +1,5 @@
-﻿using Domain.Abstractions;
+﻿using Application.Abstractions;
+using Domain.Abstractions;
 
 namespace Application.Services;
 

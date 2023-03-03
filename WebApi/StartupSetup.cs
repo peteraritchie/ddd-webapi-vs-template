@@ -20,7 +20,7 @@ public static class StartupSetup
 	{
 		services.AddSingleton<IOrderRepository, InMemoryOrderRepository>();
 		services.AddSingleton<IAccountRepository>(
-			sp => new InMemoryAccountRepository(
+			_ => new InMemoryAccountRepository(
 				new Dictionary<Guid, Account>
 				{
 					{

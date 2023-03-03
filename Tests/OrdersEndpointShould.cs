@@ -7,7 +7,7 @@ using WebApi.Common;
 
 namespace Tests;
 
-public sealed class OrdersEndpointShould : WebApplicationTesterBase, IDisposable
+public sealed class OrdersEndpointShould : WebApplicationTesterBase
 {
 	private readonly MediaTypeHeaderValue orderJsonMediaType =
 		MediaTypeHeaderValue.Parse(ApplicationContentTypes.OrderJson);

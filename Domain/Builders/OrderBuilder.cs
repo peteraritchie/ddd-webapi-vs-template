@@ -30,9 +30,9 @@ public class OrderBuilder
 		}
 	}
 
-	public OrderBuilder At(DateTime dateTime)
+	public OrderBuilder At(DateTime atDateTime)
 	{
-		this.dateTime = dateTime;
+		dateTime = atDateTime;
 		return this;
 	}
 

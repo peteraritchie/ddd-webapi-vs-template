@@ -5,7 +5,7 @@ using WebApi;
 
 namespace Tests;
 
-public sealed class RootEndpointShould : WebApplicationTesterBase, IDisposable
+public sealed class RootEndpointShould : WebApplicationTesterBase
 {
 	public RootEndpointShould(WebApplicationFactory<Program> webApplicationFactory)
 		: base(webApplicationFactory)
