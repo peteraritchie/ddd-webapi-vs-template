@@ -12,6 +12,7 @@ participant "Repository" as repository
 end
 participantgroup Domain\nLayer
 participant "Aggregate\nRoot" as aggregateroot
+participant "Domain\nService" as domainservice
 end
 participantgroup Infrastructure\nLayer
 participant "Infrastructure\nService" as infservice
@@ -53,6 +54,10 @@ deactivateafter repository
 appservice->aggregateroot:
 activate aggregateroot
 appservice<--aggregateroot:
+appservice->domainservice:
+activate domainservice
+appservice<-domainservice:
+deactivateafter domainservice
 deactivateafter aggregateroot
 appservice->infservice:
 activate infservice
