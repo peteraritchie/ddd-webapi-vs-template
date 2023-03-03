@@ -2,6 +2,7 @@ using Application;
 using Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebApi;
 using WebApi.Controllers;
@@ -20,12 +21,13 @@ public class FundsControllerShould
 
 	private static FundsController CreateFundsController()
 	{
+		var stubConfigurationManager = new ConfigurationManager();
 		var httpContext = new DefaultHttpContext();
 		httpContext.Request.Headers["Correlation-ID"] = Guid.NewGuid().ToString();
 		var services = new ServiceCollection()
 			.ConfigureServices()
-			.ConfigureInfrastructureServices()
-			.ConfigureApplicationServices()
+			.ConfigureInfrastructureServices(stubConfigurationManager)
+			.ConfigureApplicationServices(stubConfigurationManager)
 			.AddSingleton(httpContext)
 			.AddSingleton<FundsController>();
 

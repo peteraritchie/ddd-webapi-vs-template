@@ -30,8 +30,8 @@ public class Program
 		// Add services to the container.
 		builder.Services.AddSingleton<IFeatureFlagService, LaunchDarklyClient>();
 		builder.Services.ConfigureServices();
-		builder.Services.ConfigureInfrastructureServices();
-		builder.Services.ConfigureApplicationServices();
+		builder.Services.ConfigureInfrastructureServices(builder.Configuration);
+		builder.Services.ConfigureApplicationServices(builder.Configuration);
 
 		// get a configuration value based upon an injected object example:
 		builder.Services.AddOptions<OrdersController.OrdersControllerOptions>()

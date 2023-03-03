@@ -3,6 +3,7 @@ using Application.Services;
 using Application.UseCases;
 using Domain.Abstractions;
 using Domain.Commands;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PRI.Messaging.Patterns;
 using PRI.Messaging.Primitives;
@@ -11,7 +12,8 @@ namespace Application;
 
 public static class ApplicationServiceCollectionExtensions
 {
-	public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services)
+	public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services,
+		ConfigurationManager configuration)
 	{
 		var bus = new Bus();
 		//bus.AddHandler(
