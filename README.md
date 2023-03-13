@@ -57,7 +57,7 @@ Structure:
 - `Application`
   - _References Domain_
   - `Services`
-    - Application services; responsible for task coordination of use case flows, one service method per flow. [Vernon]
+    - Application services; responsible for task coordination of use case flows, one service method per flow. \[Vernon, _Implementing Domain-Driven Design_ p. 521\]
   - `Commands`
     - Application commands that cross aggregate boundaries; referencing domain objects
   - `Events`
