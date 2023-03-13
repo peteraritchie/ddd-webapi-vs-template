@@ -1,5 +1,10 @@
 # Readme
 
+## Contents
+
+- [Basic Request Flow Through Domain-Driven Architectural Layers](#basic-flow)
+- [More-detailed Request Flow Through Domain-Driven Architectural Layers](#more-detailed-flow)
+- [Solution Structure](#structure)
 <!--
 Tenets:
 
@@ -35,7 +40,8 @@ Practices:
 - Web API Validates, Domain Validates, Adapters Validate
 - Adapters always involve translation or a translator. [Ritchie] or [Martin]
 -->
-Structure:
+
+## Structure
 
 - `Domain`
   - _References only generic base-class libraries_
@@ -120,11 +126,11 @@ The Application Layer contain use cases (that are collaborations of application 
 
 ## Flow Relationships
 
-Basic Flow
+### Basic Flow
 
 ![generic](docs/generic-ddd-sequence.svg)
 
-More Detailed Flow
+### More Detailed Flow
 
 ![specific](docs/specific-ddd-sequence.svg)
 
