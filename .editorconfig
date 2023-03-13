@@ -40,7 +40,7 @@ end_of_line = crlf
 insert_final_newline = true
 
 # dotnet
-dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visible type or member
 
 # Resharper Options
 # SonarLint start

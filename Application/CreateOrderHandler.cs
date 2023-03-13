@@ -1,4 +1,4 @@
-using Application.UseCases;
+using Application.Services;
 using Domain.Commands;
 using Domain.Events;
 using PRI.Messaging.Patterns.Extensions.Bus;

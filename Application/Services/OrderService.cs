@@ -1,7 +1,7 @@
 ﻿using Domain;
 using Domain.Abstractions;
 
-namespace Application.UseCases;
+namespace Application.Services;
 
 public class OrderService
 {

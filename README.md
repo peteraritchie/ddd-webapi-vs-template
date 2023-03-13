@@ -56,8 +56,6 @@ Structure:
     - interfaces, repositories, etc.
 - `Application`
   - _References Domain_
-  - `UseCases`
-    - Use case or application "Command Handlers", utilizing domain objects: Interactions involving domain objects.
   - `Services`
     - Application services; responsible for task coordination of use case flows, one service method per flow. [Vernon]
   - `Commands`
